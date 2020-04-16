@@ -9,6 +9,13 @@ let robot = level.robot;
 
 
 // Vanaf hier is de student aan de beurt
+
+// Meteen turn leidt tot een probleem!!
+
+robot.forward();
+
+robot.turn();
+
 robot.turn();
 robot.turn();
 

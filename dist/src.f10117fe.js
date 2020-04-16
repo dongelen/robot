@@ -2174,7 +2174,10 @@ var level_ts_1 = require("./level.ts");
 var game = new level_ts_1.Game(400, 400, 3, 3);
 var level = game.makeLevel(document.getElementById("app"));
 var robot = level.robot; // Vanaf hier is de student aan de beurt
+// Meteen turn leidt tot een probleem!!
 
+robot.forward();
+robot.turn();
 robot.turn();
 robot.turn();
 robot.forward();
