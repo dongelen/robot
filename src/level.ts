@@ -298,7 +298,7 @@ export class Game {
     let middle = this.width / this.numberOfColumns / 2 - 30;
     let verticalCenter = this.height / this.numberOfRows / 2 - 15;
 
-    let centerHeadLights = verticalCenter - 15;
+    let centerHeadLights = verticalCenter + 40;
     let topHeadLights = middle - 36;
     let carWidthPx = "120px";
     let carHeightPx = "60px";

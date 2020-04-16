@@ -2150,7 +2150,7 @@ function () {
   Game.prototype.createHTMLContainer = function () {
     var middle = this.width / this.numberOfColumns / 2 - 30;
     var verticalCenter = this.height / this.numberOfRows / 2 - 15;
-    var centerHeadLights = verticalCenter - 15;
+    var centerHeadLights = verticalCenter + 40;
     var topHeadLights = middle - 36;
     var carWidthPx = "120px";
     var carHeightPx = "60px";
@@ -2176,11 +2176,10 @@ var level = game.makeLevel(document.getElementById("app"));
 var robot = level.robot; // Vanaf hier is de student aan de beurt
 // Meteen turn leidt tot een probleem!!
 
+robot.backlights(true);
+robot.backlights(false);
 robot.forward();
-robot.turn();
-robot.turn();
-robot.turn();
-robot.forward();
+robot.turn(-1);
 robot.go();
 },{"./level.ts":"src/level.ts"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
@@ -2210,7 +2209,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52356" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49622" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
