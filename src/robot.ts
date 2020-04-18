@@ -13,7 +13,7 @@ export class Robot {
   
     private animationTimeLine: any;
   
-    public readonly rotation: number = 0;
+    public rotation: number = 0;
     private isAnimationFinished = false;
   
     private goal: Goal;
@@ -241,11 +241,12 @@ export class Robot {
     }
 
     happy () {
-      let sound = document.getElementById ("oemp");
+      let sound = document.getElementById ("oemp") as HTMLAudioElement;
       sound.play();
     }
+
     spin (direction : number) {
-      
+
       this.animationTimeLine.add({
         targets: this.element,
         rotate: 360,
@@ -272,6 +273,7 @@ export class Robot {
     }
   
     go() {    
+    
 
       this.doeIets();      
 
@@ -282,16 +284,16 @@ export class Robot {
         duration: 1,
         begin: function(anim) {
           console.log ("Eind chekc");
-          robot.goal.finishedAt(robot, robot.position);
+          // robot.goal.finishedAt(robot, robot.position);
 
-          if (robot.goal.isSatified()) {
-            console.log ("Doel bereikt!!");
-            // alert ("Gelukt!");
-            robot.happy();
-          }
-          else {
-            alert ("Mislukt");
-          }
+          // if (robot.goal.isSatified()) {
+          //   console.log ("Doel bereikt!!");
+          //   // alert ("Gelukt!");
+          //   robot.happy();
+          // }
+          // else {
+          //   alert ("Mislukt");
+          // }
         }
       });
 

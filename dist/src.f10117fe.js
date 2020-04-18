@@ -2141,16 +2141,15 @@ function () {
       targets: this.element,
       duration: 1,
       begin: function begin(anim) {
-        console.log("Eind chekc");
-        robot.goal.finishedAt(robot, robot.position);
-
-        if (robot.goal.isSatified()) {
-          console.log("Doel bereikt!!"); // alert ("Gelukt!");
-
-          robot.happy();
-        } else {
-          alert("Mislukt");
-        }
+        console.log("Eind chekc"); // robot.goal.finishedAt(robot, robot.position);
+        // if (robot.goal.isSatified()) {
+        //   console.log ("Doel bereikt!!");
+        //   // alert ("Gelukt!");
+        //   robot.happy();
+        // }
+        // else {
+        //   alert ("Mislukt");
+        // }
       }
     });
     var sound = document.getElementById("carsound"); // sound.play();
@@ -2219,7 +2218,7 @@ var honk_mp3_1 = __importDefault(require("/public/honk.mp3"));
 
 var oemp_mp3_1 = __importDefault(require("/public/oemp.mp3"));
 
-var robot_ts_1 = require("./robot.ts");
+var robot_1 = require("./robot");
 
 var Goal =
 /** @class */
@@ -2325,7 +2324,7 @@ function () {
     var height = this.canvas.height;
     var columnWidth = width / this.numberOColumns;
     var rowHeight = height / this.numberOfRows;
-    this.robot = new robot_ts_1.Robot(goal, canvases[1], {
+    this.robot = new robot_1.Robot(goal, canvases[1], {
       x: 0,
       y: 0
     }, columnWidth, rowHeight);
@@ -2377,7 +2376,7 @@ function () {
   };
 
   Game.prototype.makeLevel0 = function (layer1, robot) {
-    var l = new Level(new GoalLevel3(), [layer1, robot], this.numberOfColumns, this.numberOfRows);
+    var l = new Level(new GoalLevel1(), [layer1, robot], this.numberOfColumns, this.numberOfRows);
     l.draw();
     var button = document.getElementById("check");
     console.log("Button");
@@ -2405,47 +2404,52 @@ function () {
 }();
 
 exports.Game = Game;
-},{"/public/car3.png":"public/car3.png","/public/car_backlights.png":"public/car_backlights.png","/public/lights.png":"public/lights.png","/public/carsound.mp3":"public/carsound.mp3","/public/honk.mp3":"public/honk.mp3","/public/oemp.mp3":"public/oemp.mp3","./robot.ts":"src/robot.ts"}],"src/index.ts":[function(require,module,exports) {
+},{"/public/car3.png":"public/car3.png","/public/car_backlights.png":"public/car_backlights.png","/public/lights.png":"public/lights.png","/public/carsound.mp3":"public/carsound.mp3","/public/honk.mp3":"public/honk.mp3","/public/oemp.mp3":"public/oemp.mp3","./robot":"src/robot.ts"}],"src/index.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var level_ts_1 = require("./level.ts"); // import { __esModule } from "../dist/src.4b83b6bd";
+var level_1 = require("./level");
 
-
-var game = new level_ts_1.Game(400, 400, 3, 3);
+var game = new level_1.Game(400, 400, 3, 3);
 var level = game.makeLevel(0, document.getElementById("app"));
 var robot = level.robot;
 window.addEventListener("mousedown", function (event) {
   robot.go();
 }); // Vanaf hier is de student aan de beurt
 // Meteen turn leidt tot een probleem!!
+// robot.blinkHeadlights(4)
+// robot.forward();
+// robot.backward();
+// robot.turn();
+// robot.turn();
+// robot.forward();
+// robot.forward();
+// robot.turn (-1);
+// robot.turn (-1);
+// robot.forward();
+// robot.forward();
+// robot.turn (-1);
+// robot.turn (-1);
+// robot.forward();
+// robot.forward();
+// robot.turn();
+// robot.backlights (true);
 
-robot.blinkHeadlights(4);
 robot.forward();
-robot.backward();
-robot.turn();
-robot.turn();
-robot.forward();
-robot.forward();
-robot.turn(-1);
-robot.turn(-1);
-robot.forward();
-robot.forward();
-robot.turn(-1);
-robot.turn(-1);
-robot.forward();
-robot.forward();
-robot.turn();
-robot.backlights(true); // robot.forward();
-// robot.turn(-1);
-// robot.turn(-1);
-// robot.forward();
-// robot.forward();
-// robot.spin(1);
-},{"./level.ts":"src/level.ts"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+robot.forward(); // class Test {
+//     timeout() {
+//         setTimeout(() => {
+//             console.log('Test');
+//             this.timeout();
+//         }, 3000);
+//     } 
+//  }
+//  let t = new Test();
+//  t.timeout();
+},{"./level":"src/level.ts"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;

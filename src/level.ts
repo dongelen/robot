@@ -3,10 +3,10 @@ import carImage from "/public/car3.png";
 import carBacklightImage from "/public/car_backlights.png";
 import headLightsImage from "/public/lights.png";
 
-import carSound from "/public/carsound.mp3"
-import honkSound from "/public/honk.mp3"
+import carSound from "/public/carsound.mp3";
+import honkSound from "/public/honk.mp3";
 import oempSound from "/public/oemp.mp3";
-import { Robot } from "./robot.ts";
+import { Robot } from "./robot";
 
 export interface Position {
   x: number;
@@ -141,7 +141,7 @@ export class Game {
 
   private makeLevel0 (layer1 :HTMLElement, robot: HTMLElement) {
     let l = new Level(
-      new GoalLevel3(),
+      new GoalLevel1(),
       [layer1, robot],
       this.numberOfColumns,
       this.numberOfRows
@@ -153,7 +153,7 @@ export class Game {
     console.log (button);
     button.onclick = function () {
       l.robot.check();
-    }
+    };
 
     return l;
 
