@@ -5,6 +5,7 @@ import headLightsImage from "/public/lights.png";
 
 import carSound from "/public/carsound.mp3"
 import honkSound from "/public/honk.mp3"
+import oempSound from "/public/oemp.mp3";
 import { Robot } from "./robot.ts";
 
 export interface Position {
@@ -225,6 +226,10 @@ export class Game {
     <source src="${honkSound}"/>
     </audio>
     
+    <audio id="oemp">
+    <source src="${oempSound}"/>
+    </audio>
+
     <button id="check">Click me</button>
     <div style="position: relative;">
      <canvas id="layer1" width="${this.width}" height="${this.height}" 

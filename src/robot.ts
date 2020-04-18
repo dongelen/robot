@@ -98,7 +98,8 @@ export class Robot {
 
       if (this.goal.isSatified()) {
         console.log ("Doel bereikt!!");
-        alert ("Gelukt!");
+        // alert ("Gelukt!");
+        this.happy();
       }
       else {
         alert ("Mislukt");
@@ -238,6 +239,11 @@ export class Robot {
       });
 
     }
+
+    happy () {
+      let sound = document.getElementById ("oemp");
+      sound.play();
+    }
     spin (direction : number) {
       
       this.animationTimeLine.add({
@@ -280,7 +286,8 @@ export class Robot {
 
           if (robot.goal.isSatified()) {
             console.log ("Doel bereikt!!");
-            alert ("Gelukt!");
+            // alert ("Gelukt!");
+            robot.happy();
           }
           else {
             alert ("Mislukt");

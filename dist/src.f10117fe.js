@@ -127,6 +127,8 @@ module.exports = "/lights.446677cc.png";
 module.exports = "/carsound.aa8a980e.mp3";
 },{}],"public/honk.mp3":[function(require,module,exports) {
 module.exports = "/honk.8306c902.mp3";
+},{}],"public/oemp.mp3":[function(require,module,exports) {
+module.exports = "/oemp.0e1cfc80.mp3";
 },{}],"node_modules/animejs/lib/anime.es.js":[function(require,module,exports) {
 "use strict";
 
@@ -1975,8 +1977,9 @@ function () {
     this.goal.finishedAt(this, this.position);
 
     if (this.goal.isSatified()) {
-      console.log("Doel bereikt!!");
-      alert("Gelukt!");
+      console.log("Doel bereikt!!"); // alert ("Gelukt!");
+
+      this.happy();
     } else {
       alert("Mislukt");
     }
@@ -2116,6 +2119,11 @@ function () {
     });
   };
 
+  Robot.prototype.happy = function () {
+    var sound = document.getElementById("oemp");
+    sound.play();
+  };
+
   Robot.prototype.spin = function (direction) {
     this.animationTimeLine.add({
       targets: this.element,
@@ -2137,8 +2145,9 @@ function () {
         robot.goal.finishedAt(robot, robot.position);
 
         if (robot.goal.isSatified()) {
-          console.log("Doel bereikt!!");
-          alert("Gelukt!");
+          console.log("Doel bereikt!!"); // alert ("Gelukt!");
+
+          robot.happy();
         } else {
           alert("Mislukt");
         }
@@ -2207,6 +2216,8 @@ var lights_png_1 = __importDefault(require("/public/lights.png"));
 var carsound_mp3_1 = __importDefault(require("/public/carsound.mp3"));
 
 var honk_mp3_1 = __importDefault(require("/public/honk.mp3"));
+
+var oemp_mp3_1 = __importDefault(require("/public/oemp.mp3"));
 
 var robot_ts_1 = require("./robot.ts");
 
@@ -2386,7 +2397,7 @@ function () {
     var topHeadLights = middle - 36;
     var carWidthPx = "120px";
     var carHeightPx = "60px";
-    var htmlCode = "\n    \n\n    <style> \n    #robot {\n      width: " + carWidthPx + ";\n      height: " + carHeightPx + ";\n      left: " + middle + ";\n      top: " + verticalCenter + ";\n      position: relative;\n  \n    }\n\n    #car {\n      position: relative;\n      background-image: url(" + car3_png_1.default + ");\n      background-size: " + carWidthPx + " " + carHeightPx + "; \n      width: " + carWidthPx + ";\n      height: " + carHeightPx + ";\n    }\n    #carbacklight {\n      left: 0;\n      top: 0;\n      position: absolute;\n      background-image: url(" + car_backlights_png_1.default + ");\n      background-size: " + carWidthPx + " " + carHeightPx + "; \n      width: " + carWidthPx + ";\n      height: " + carHeightPx + ";\n      opacity: 0;\n    }\n\n    #headlights {\n      width: " + carWidthPx + ";\n      height: " + carHeightPx + ";\n      left: " + centerHeadLights + ";\n      top: " + topHeadLights + ";\n      position: absolute;\n      opacity : 0;\n      background-image: url(" + lights_png_1.default + ");\n      background-size: " + carWidthPx + " " + carHeightPx + "; \n    }\n\n    #layer1 {\n      //display: none;\n    }\n\n    body {\n      background-color: black;\n    }\n    </style>\n    <audio id=\"carsound\">\n    <source src=\"" + carsound_mp3_1.default + "\"/>\n    </audio>\n\n    <audio id=\"honk\">\n    <source src=\"" + honk_mp3_1.default + "\"/>\n    </audio>\n    \n    <button id=\"check\">Click me</button>\n    <div style=\"position: relative;\">\n     <canvas id=\"layer1\" width=\"" + this.width + "\" height=\"" + this.height + "\" \n       style=\"position: absolute; left: 0; top: 0; z-index: 0;\"></canvas>\n\n      <div id=\"robot\">  \n        <div id=\"headlights\"></div>\n\n        <div id=\"car\"> \n          <div id=\"carbacklight\"></div>\n\n        </div>\n      </div>\n     </div>\n     \n    ";
+    var htmlCode = "\n    \n\n    <style> \n    #robot {\n      width: " + carWidthPx + ";\n      height: " + carHeightPx + ";\n      left: " + middle + ";\n      top: " + verticalCenter + ";\n      position: relative;\n  \n    }\n\n    #car {\n      position: relative;\n      background-image: url(" + car3_png_1.default + ");\n      background-size: " + carWidthPx + " " + carHeightPx + "; \n      width: " + carWidthPx + ";\n      height: " + carHeightPx + ";\n    }\n    #carbacklight {\n      left: 0;\n      top: 0;\n      position: absolute;\n      background-image: url(" + car_backlights_png_1.default + ");\n      background-size: " + carWidthPx + " " + carHeightPx + "; \n      width: " + carWidthPx + ";\n      height: " + carHeightPx + ";\n      opacity: 0;\n    }\n\n    #headlights {\n      width: " + carWidthPx + ";\n      height: " + carHeightPx + ";\n      left: " + centerHeadLights + ";\n      top: " + topHeadLights + ";\n      position: absolute;\n      opacity : 0;\n      background-image: url(" + lights_png_1.default + ");\n      background-size: " + carWidthPx + " " + carHeightPx + "; \n    }\n\n    #layer1 {\n      //display: none;\n    }\n\n    body {\n      background-color: black;\n    }\n    </style>\n    <audio id=\"carsound\">\n    <source src=\"" + carsound_mp3_1.default + "\"/>\n    </audio>\n\n    <audio id=\"honk\">\n    <source src=\"" + honk_mp3_1.default + "\"/>\n    </audio>\n    \n    <audio id=\"oemp\">\n    <source src=\"" + oemp_mp3_1.default + "\"/>\n    </audio>\n\n    <button id=\"check\">Click me</button>\n    <div style=\"position: relative;\">\n     <canvas id=\"layer1\" width=\"" + this.width + "\" height=\"" + this.height + "\" \n       style=\"position: absolute; left: 0; top: 0; z-index: 0;\"></canvas>\n\n      <div id=\"robot\">  \n        <div id=\"headlights\"></div>\n\n        <div id=\"car\"> \n          <div id=\"carbacklight\"></div>\n\n        </div>\n      </div>\n     </div>\n     \n    ";
     return htmlCode;
   };
 
@@ -2394,7 +2405,7 @@ function () {
 }();
 
 exports.Game = Game;
-},{"/public/car3.png":"public/car3.png","/public/car_backlights.png":"public/car_backlights.png","/public/lights.png":"public/lights.png","/public/carsound.mp3":"public/carsound.mp3","/public/honk.mp3":"public/honk.mp3","./robot.ts":"src/robot.ts"}],"src/index.ts":[function(require,module,exports) {
+},{"/public/car3.png":"public/car3.png","/public/car_backlights.png":"public/car_backlights.png","/public/lights.png":"public/lights.png","/public/carsound.mp3":"public/carsound.mp3","/public/honk.mp3":"public/honk.mp3","/public/oemp.mp3":"public/oemp.mp3","./robot.ts":"src/robot.ts"}],"src/index.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2423,8 +2434,8 @@ robot.turn(-1);
 robot.turn(-1);
 robot.forward();
 robot.forward();
-robot.turn(-1); // robot.turn (-1);
-
+robot.turn(-1);
+robot.turn(-1);
 robot.forward();
 robot.forward();
 robot.turn();

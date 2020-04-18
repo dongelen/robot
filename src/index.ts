@@ -24,7 +24,7 @@ robot.turn (-1);
 robot.forward();
 robot.forward();
 robot.turn (-1);
-// robot.turn (-1);
+robot.turn (-1);
 
 
 robot.forward();
