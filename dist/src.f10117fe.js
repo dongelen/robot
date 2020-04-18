@@ -117,7 +117,17 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"node_modules/animejs/lib/anime.es.js":[function(require,module,exports) {
+})({"public/car3.png":[function(require,module,exports) {
+module.exports = "/car3.43daa84c.png";
+},{}],"public/car_backlights.png":[function(require,module,exports) {
+module.exports = "/car_backlights.cd4c58c5.png";
+},{}],"public/lights.png":[function(require,module,exports) {
+module.exports = "/lights.446677cc.png";
+},{}],"public/carsound.mp3":[function(require,module,exports) {
+module.exports = "/carsound.aa8a980e.mp3";
+},{}],"public/honk.mp3":[function(require,module,exports) {
+module.exports = "/honk.8306c902.mp3";
+},{}],"node_modules/animejs/lib/anime.es.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1856,15 +1866,7 @@ anime.random = function (min, max) {
 
 var _default = anime;
 exports.default = _default;
-},{}],"public/car3.png":[function(require,module,exports) {
-module.exports = "/car3.43daa84c.png";
-},{}],"public/car_backlights.png":[function(require,module,exports) {
-module.exports = "/car_backlights.cd4c58c5.png";
-},{}],"public/lights.png":[function(require,module,exports) {
-module.exports = "/lights.446677cc.png";
-},{}],"public/carsound.mp3":[function(require,module,exports) {
-module.exports = "/carsound.aa8a980e.mp3";
-},{}],"src/level.ts":[function(require,module,exports) {
+},{}],"src/robot.ts":[function(require,module,exports) {
 "use strict";
 
 var __importDefault = this && this.__importDefault || function (mod) {
@@ -1879,31 +1881,43 @@ Object.defineProperty(exports, "__esModule", {
 
 var anime_es_js_1 = __importDefault(require("animejs/lib/anime.es.js"));
 
-var car3_png_1 = __importDefault(require("/public/car3.png"));
-
-var car_backlights_png_1 = __importDefault(require("/public/car_backlights.png"));
-
-var lights_png_1 = __importDefault(require("/public/lights.png"));
-
-var carsound_mp3_1 = __importDefault(require("/public/carsound.mp3"));
+var speed = 1200; // let speed = 500;
 
 var Robot =
 /** @class */
 function () {
-  function Robot(element, position, widthCell, heightCell) {
+  function Robot(goal, element, position, widthCell, heightCell) {
+    var _this = this;
+
     this.rotation = 0;
+    this.isAnimationFinished = false;
+
+    this.endAnimation = function (anim) {
+      console.log("%%%%%%%%%% End animation");
+      console.log(_this.position.x + " " + _this.position.y);
+      console.log(_this);
+
+      _this.goal.finishedAt(_this, _this.position);
+
+      if (_this.goal.isSatified()) {
+        console.log("Doel bereikt!!");
+        alert("Gelukt!");
+      } else {
+        alert("Mislukt");
+      }
+    };
+
     this.position = position;
     this.element = element;
     this.widthCell = widthCell;
     this.heightCell = heightCell;
+    this.goal = goal;
     this.animationTimeLine = anime_es_js_1.default.timeline({
       autoplay: false
     });
   }
 
   Robot.prototype.calculateForwardXMovement = function () {
-    console.log(this.rotation);
-
     if (this.rotation < 0) {
       this.rotation = 360 + this.rotation;
     }
@@ -1957,41 +1971,53 @@ function () {
     return 1;
   };
 
+  Robot.prototype.check = function () {
+    this.goal.finishedAt(this, this.position);
+
+    if (this.goal.isSatified()) {
+      console.log("Doel bereikt!!");
+      alert("Gelukt!");
+    } else {
+      alert("Mislukt");
+    }
+  };
+
   Robot.prototype.doeIets = function () {
+    var robot = this;
     this.animationTimeLine.add({
       targets: this.element,
       duration: 1,
       begin: function begin(anim) {
         console.log("Iets gedaan");
+        console.log(robot);
       }
     });
   };
 
   Robot.prototype.forward = function () {
-    console.log("Old pos: " + this.position.x + " " + this.position.y);
+    var oldPosition = this.position;
     this.position.x = this.position.x + this.calculateForwardXMovement();
     this.position.y = this.position.y + this.calculateForwardYMovement();
-    console.log("New pos: " + this.position.x + " " + this.position.y);
-    console.log("Translation gaat worden  " + this.widthCell * this.position.x);
-    console.log(this.widthCell);
-    console.log(this.heightCell);
+    this.goal.moved(this, oldPosition, this.position);
     this.animationTimeLine.add({
       targets: this.element,
       translateX: this.widthCell * this.position.x,
       translateY: this.heightCell * this.position.y,
-      duration: 1500,
+      duration: speed,
       easing: "easeInOutQuad"
     });
   };
 
   Robot.prototype.backward = function () {
+    var oldPosition = this.position;
     this.position.x = this.position.x + this.calculateBackwardXMovement();
     this.position.y = this.position.y + this.calculateBackwardYMovement();
+    this.goal.moved(this, oldPosition, this.position);
     this.animationTimeLine.add({
       targets: this.element,
       translateX: this.widthCell * this.position.x,
       translateY: this.heightCell * this.position.y,
-      duration: 1500,
+      duration: speed,
       easing: "easeInOutQuad"
     });
   };
@@ -2006,7 +2032,7 @@ function () {
     this.animationTimeLine.add({
       targets: this.element,
       rotate: this.rotation,
-      duration: 1500,
+      duration: speed,
       ease: "easeInOutQuad"
     });
   };
@@ -2053,10 +2079,73 @@ function () {
     });
   };
 
+  Robot.prototype.blinkHeadlights = function (times) {
+    if (times === void 0) {
+      times = 1;
+    }
+
+    var headlights = this.findElement("headlights");
+    var frames = [];
+
+    for (var i = 0; i < times; i++) {
+      frames.push({
+        opacity: 1
+      });
+      frames.push({
+        opacity: 0
+      });
+    }
+
+    this.animationTimeLine.add({
+      targets: headlights,
+      keyframes: frames,
+      duration: 500,
+      easing: "easeInOutSine",
+      loop: true
+    });
+  };
+
+  Robot.prototype.honk = function () {
+    var sound = document.getElementById("honk");
+    this.animationTimeLine.add({
+      targets: this.element,
+      duration: 500,
+      begin: function begin(anim) {
+        sound.play();
+      }
+    });
+  };
+
+  Robot.prototype.spin = function (direction) {
+    this.animationTimeLine.add({
+      targets: this.element,
+      rotate: 360,
+      duration: 1500,
+      ease: "easeInOutQuad"
+    });
+  };
+
   Robot.prototype.go = function () {
-    // let sound = document.getElementById ("carsound");
-    // console.log (sound);
-    // sound.play();
+    this.doeIets();
+    var robot = this; // hack
+
+    this.animationTimeLine.add({
+      targets: this.element,
+      duration: 1,
+      begin: function begin(anim) {
+        console.log("Eind chekc");
+        robot.goal.finishedAt(robot, robot.position);
+
+        if (robot.goal.isSatified()) {
+          console.log("Doel bereikt!!");
+          alert("Gelukt!");
+        } else {
+          alert("Mislukt");
+        }
+      }
+    });
+    var sound = document.getElementById("carsound"); // sound.play();
+
     this.animationTimeLine.play();
   };
 
@@ -2070,6 +2159,134 @@ function () {
 }();
 
 exports.Robot = Robot;
+},{"animejs/lib/anime.es.js":"node_modules/animejs/lib/anime.es.js"}],"src/level.ts":[function(require,module,exports) {
+"use strict";
+
+var __extends = this && this.__extends || function () {
+  var _extendStatics = function extendStatics(d, b) {
+    _extendStatics = Object.setPrototypeOf || {
+      __proto__: []
+    } instanceof Array && function (d, b) {
+      d.__proto__ = b;
+    } || function (d, b) {
+      for (var p in b) {
+        if (b.hasOwnProperty(p)) d[p] = b[p];
+      }
+    };
+
+    return _extendStatics(d, b);
+  };
+
+  return function (d, b) {
+    _extendStatics(d, b);
+
+    function __() {
+      this.constructor = d;
+    }
+
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+  };
+}();
+
+var __importDefault = this && this.__importDefault || function (mod) {
+  return mod && mod.__esModule ? mod : {
+    "default": mod
+  };
+};
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var car3_png_1 = __importDefault(require("/public/car3.png"));
+
+var car_backlights_png_1 = __importDefault(require("/public/car_backlights.png"));
+
+var lights_png_1 = __importDefault(require("/public/lights.png"));
+
+var carsound_mp3_1 = __importDefault(require("/public/carsound.mp3"));
+
+var honk_mp3_1 = __importDefault(require("/public/honk.mp3"));
+
+var robot_ts_1 = require("./robot.ts");
+
+var Goal =
+/** @class */
+function () {
+  function Goal() {
+    this.isGoalMet = false;
+  }
+
+  Goal.prototype.moved = function (_robot, _from, _to) {};
+
+  Goal.prototype.finishedAt = function (_robot, _endPosition) {};
+
+  Goal.prototype.isSatified = function () {
+    return this.isGoalMet;
+  };
+
+  return Goal;
+}();
+
+exports.Goal = Goal;
+
+var GoalLevel1 =
+/** @class */
+function (_super) {
+  __extends(GoalLevel1, _super);
+
+  function GoalLevel1() {
+    return _super !== null && _super.apply(this, arguments) || this;
+  }
+
+  GoalLevel1.prototype.finishedAt = function (_robot, endPosition) {
+    console.log("Goal level 1 aangeroepen");
+    this.isGoalMet = endPosition.x == 2 && endPosition.y == 0;
+  };
+
+  return GoalLevel1;
+}(Goal);
+
+var GoalLevel2 =
+/** @class */
+function (_super) {
+  __extends(GoalLevel2, _super);
+
+  function GoalLevel2() {
+    var _this = _super !== null && _super.apply(this, arguments) || this;
+
+    _this.hitPosition = false;
+    return _this;
+  }
+
+  GoalLevel2.prototype.moved = function (_robot, _from, to) {
+    this.hitPosition = this.hitPosition || to.x == 1 && to.y == 2;
+  };
+
+  GoalLevel2.prototype.finishedAt = function (_robot, endPosition) {
+    this.isGoalMet = this.hitPosition && endPosition.x == 2 && endPosition.y == 0;
+  };
+
+  return GoalLevel2;
+}(Goal);
+
+var GoalLevel3 =
+/** @class */
+function (_super) {
+  __extends(GoalLevel3, _super);
+
+  function GoalLevel3() {
+    return _super !== null && _super.apply(this, arguments) || this;
+  }
+
+  GoalLevel3.prototype.finishedAt = function (robot, endPosition) {
+    _super.prototype.finishedAt.call(this, robot, endPosition);
+
+    this.isGoalMet = robot.rotation === 315;
+  };
+
+  return GoalLevel3;
+}(GoalLevel2);
 
 var CellType =
 /** @class */
@@ -2084,7 +2301,7 @@ exports.CellType = CellType;
 var Level =
 /** @class */
 function () {
-  function Level(canvases, numberOfRows, numberOfColumns) {
+  function Level(goal, canvases, numberOfRows, numberOfColumns) {
     this.fields = [];
     this.numberOColumns = 3;
     this.numberOfRows = 3;
@@ -2097,7 +2314,7 @@ function () {
     var height = this.canvas.height;
     var columnWidth = width / this.numberOColumns;
     var rowHeight = height / this.numberOfRows;
-    this.robot = new Robot(canvases[1], {
+    this.robot = new robot_ts_1.Robot(goal, canvases[1], {
       x: 0,
       y: 0
     }, columnWidth, rowHeight);
@@ -2109,6 +2326,7 @@ function () {
     var context = this.canvas.getContext("2d");
     var columnWidth = width / this.numberOColumns;
     var rowHeight = height / this.numberOfRows;
+    context.strokeStyle = "#FF0000";
 
     for (var i = 0; i !== this.numberOColumns; i++) {
       for (var j = 0; j !== this.numberOfRows; j++) {
@@ -2119,7 +2337,6 @@ function () {
     }
 
     this.robot.drawOnCanvas();
-    console.log(lights_png_1.default);
   };
 
   return Level;
@@ -2137,13 +2354,28 @@ function () {
     this.numberOfRows = numberOfRows;
   }
 
-  Game.prototype.makeLevel = function (element) {
+  Game.prototype.makeLevel = function (levelNumber, element) {
     var code = this.createHTMLContainer();
     element.innerHTML = code;
     var canvas1 = document.getElementById("layer1");
     var canvas2 = document.getElementById("robot");
-    var l = new Level([canvas1, canvas2], this.numberOfColumns, this.numberOfRows);
+
+    if (levelNumber == 0) {
+      return this.makeLevel0(canvas1, canvas2);
+    }
+  };
+
+  Game.prototype.makeLevel0 = function (layer1, robot) {
+    var l = new Level(new GoalLevel3(), [layer1, robot], this.numberOfColumns, this.numberOfRows);
     l.draw();
+    var button = document.getElementById("check");
+    console.log("Button");
+    console.log(button);
+
+    button.onclick = function () {
+      l.robot.check();
+    };
+
     return l;
   };
 
@@ -2154,7 +2386,7 @@ function () {
     var topHeadLights = middle - 36;
     var carWidthPx = "120px";
     var carHeightPx = "60px";
-    var htmlCode = "\n    \n\n    <style> \n    #robot {\n      width: " + carWidthPx + ";\n      height: " + carHeightPx + ";\n      left: " + middle + ";\n      top: " + verticalCenter + ";\n      position: relative;\n  \n    }\n\n    #car {\n      position: relative;\n      background-image: url(" + car3_png_1.default + ");\n      background-size: " + carWidthPx + " " + carHeightPx + "; \n      width: " + carWidthPx + ";\n      height: " + carHeightPx + ";\n    }\n    #carbacklight {\n      left: 0;\n      top: 0;\n      position: absolute;\n      background-image: url(" + car_backlights_png_1.default + ");\n      background-size: " + carWidthPx + " " + carHeightPx + "; \n      width: " + carWidthPx + ";\n      height: " + carHeightPx + ";\n      opacity: 0;\n    }\n\n    #headlights {\n      width: " + carWidthPx + ";\n      height: " + carHeightPx + ";\n      left: " + centerHeadLights + ";\n      top: " + topHeadLights + ";\n      position: absolute;\n      opacity : 0;\n      background-image: url(" + lights_png_1.default + ");\n      background-size: " + carWidthPx + " " + carHeightPx + "; \n    }\n\n    #layer1 {\n      //display: none;\n    }\n\n    body {\n      background-color: black;\n    }\n    </style>\n    <audio id=\"carsound\">\n    <source src=\"" + carsound_mp3_1.default + "\"/>\n    </audio>\n\n    <div style=\"position: relative;\">\n     <canvas id=\"layer1\" width=\"" + this.width + "\" height=\"" + this.height + "\" \n       style=\"position: absolute; left: 0; top: 0; z-index: 0;\"></canvas>\n\n      <div id=\"robot\">  \n        <div id=\"headlights\"></div>\n\n        <div id=\"car\"> \n          <div id=\"carbacklight\"></div>\n\n        </div>\n      </div>\n     </div>\n    ";
+    var htmlCode = "\n    \n\n    <style> \n    #robot {\n      width: " + carWidthPx + ";\n      height: " + carHeightPx + ";\n      left: " + middle + ";\n      top: " + verticalCenter + ";\n      position: relative;\n  \n    }\n\n    #car {\n      position: relative;\n      background-image: url(" + car3_png_1.default + ");\n      background-size: " + carWidthPx + " " + carHeightPx + "; \n      width: " + carWidthPx + ";\n      height: " + carHeightPx + ";\n    }\n    #carbacklight {\n      left: 0;\n      top: 0;\n      position: absolute;\n      background-image: url(" + car_backlights_png_1.default + ");\n      background-size: " + carWidthPx + " " + carHeightPx + "; \n      width: " + carWidthPx + ";\n      height: " + carHeightPx + ";\n      opacity: 0;\n    }\n\n    #headlights {\n      width: " + carWidthPx + ";\n      height: " + carHeightPx + ";\n      left: " + centerHeadLights + ";\n      top: " + topHeadLights + ";\n      position: absolute;\n      opacity : 0;\n      background-image: url(" + lights_png_1.default + ");\n      background-size: " + carWidthPx + " " + carHeightPx + "; \n    }\n\n    #layer1 {\n      //display: none;\n    }\n\n    body {\n      background-color: black;\n    }\n    </style>\n    <audio id=\"carsound\">\n    <source src=\"" + carsound_mp3_1.default + "\"/>\n    </audio>\n\n    <audio id=\"honk\">\n    <source src=\"" + honk_mp3_1.default + "\"/>\n    </audio>\n    \n    <button id=\"check\">Click me</button>\n    <div style=\"position: relative;\">\n     <canvas id=\"layer1\" width=\"" + this.width + "\" height=\"" + this.height + "\" \n       style=\"position: absolute; left: 0; top: 0; z-index: 0;\"></canvas>\n\n      <div id=\"robot\">  \n        <div id=\"headlights\"></div>\n\n        <div id=\"car\"> \n          <div id=\"carbacklight\"></div>\n\n        </div>\n      </div>\n     </div>\n     \n    ";
     return htmlCode;
   };
 
@@ -2162,25 +2394,46 @@ function () {
 }();
 
 exports.Game = Game;
-},{"animejs/lib/anime.es.js":"node_modules/animejs/lib/anime.es.js","/public/car3.png":"public/car3.png","/public/car_backlights.png":"public/car_backlights.png","/public/lights.png":"public/lights.png","/public/carsound.mp3":"public/carsound.mp3"}],"src/index.ts":[function(require,module,exports) {
+},{"/public/car3.png":"public/car3.png","/public/car_backlights.png":"public/car_backlights.png","/public/lights.png":"public/lights.png","/public/carsound.mp3":"public/carsound.mp3","/public/honk.mp3":"public/honk.mp3","./robot.ts":"src/robot.ts"}],"src/index.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var level_ts_1 = require("./level.ts");
+var level_ts_1 = require("./level.ts"); // import { __esModule } from "../dist/src.4b83b6bd";
+
 
 var game = new level_ts_1.Game(400, 400, 3, 3);
-var level = game.makeLevel(document.getElementById("app"));
-var robot = level.robot; // Vanaf hier is de student aan de beurt
+var level = game.makeLevel(0, document.getElementById("app"));
+var robot = level.robot;
+window.addEventListener("mousedown", function (event) {
+  robot.go();
+}); // Vanaf hier is de student aan de beurt
 // Meteen turn leidt tot een probleem!!
 
-robot.backlights(true);
-robot.backlights(false);
+robot.blinkHeadlights(4);
+robot.forward();
+robot.backward();
+robot.turn();
+robot.turn();
+robot.forward();
 robot.forward();
 robot.turn(-1);
-robot.go();
+robot.turn(-1);
+robot.forward();
+robot.forward();
+robot.turn(-1); // robot.turn (-1);
+
+robot.forward();
+robot.forward();
+robot.turn();
+robot.backlights(true); // robot.forward();
+// robot.turn(-1);
+// robot.turn(-1);
+// robot.forward();
+// robot.forward();
+// robot.spin(1);
 },{"./level.ts":"src/level.ts"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -2209,7 +2462,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49622" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "65134" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

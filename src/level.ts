@@ -4,209 +4,56 @@ import carBacklightImage from "/public/car_backlights.png";
 import headLightsImage from "/public/lights.png";
 
 import carSound from "/public/carsound.mp3"
+import honkSound from "/public/honk.mp3"
+import { Robot } from "./robot.ts";
 
 export interface Position {
   x: number;
   y: number;
 }
 
-export class Robot {
-  public position: Position;
-  private element: Element;
-  private widthCell: number;
-  private heightCell: number;
 
-  private animationTimeLine: any;
-
-  private rotation: number = 0;
-
-  constructor(
-    element: HTMLElement,
-    position: Position,
-    widthCell: number,
-    heightCell: number
-  ) {
-    this.position = position;
-    this.element = element;
-    this.widthCell = widthCell;
-    this.heightCell = heightCell;
-    this.animationTimeLine = anime.timeline({
-      autoplay: false
-    });
-  }
-
-  private calculateForwardXMovement(): number {    
-    console.log (this.rotation)
-    if (this.rotation < 0) {
-      this.rotation = 360 + this.rotation;
-    }
-    if (this.rotation >= 0 && this.rotation < 90) {
-      return 1;
-    } 
-    else if (this.rotation === 90) {
-      return 0;
-    } 
-    else if (this.rotation < 270) {
-      return -1;
-    }
-    else if (this.rotation == 315) {
-      return 1;
-    }
-    
-    return 0;
-  }
-
-
-  private calculateForwardYMovement(): number {
-    if (this.rotation < 0) {
-      this.rotation = 360 + this.rotation;
-    }
-
-    if (this.rotation === 0 || this.rotation === 180) {
-      return 0;
-    } 
-    else if (this.rotation > 0 && this.rotation < 180) {
-      return 1;
-    }
-
-    return -1;
-  }
-
-  private calculateBackwardXMovement(): number {
-    if (this.rotation >= 0 && this.rotation < 90) {
-      return -1;
-    } else if (this.rotation === 90) {
-      return 0;
-    } else if (this.rotation < 270) {
-      return 1;
-    }
-    return 0;
-  }
-
-  private calculateBackwardYMovement(): number {
-    if (this.rotation === 0 || this.rotation === 180) {
-      return 0;
-    } else if (this.rotation > 0 && this.rotation < 180) {
-      return -1;
-    }
-
-    return 1;
-  }
-
-  doeIets () {
-    this.animationTimeLine.add ({
-      targets: this.element,
-      duration: 1,
-      begin: function(anim) {
-        console.log ("Iets gedaan");
-      }
-    });
-  }
-
-  forward() {
-    console.log ("Old pos: " + this.position.x + " " + this.position.y);
-    this.position.x = this.position.x + this.calculateForwardXMovement();
-    this.position.y = this.position.y + this.calculateForwardYMovement();
-    console.log ("New pos: " + this.position.x + " " + this.position.y);
-
-    console.log ("Translation gaat worden  " + (this.widthCell * this.position.x))
-    console.log (this.widthCell);
-    console.log (this.heightCell)
-
-    this.animationTimeLine.add({
-      targets: this.element,
-      translateX: this.widthCell * this.position.x,
-      translateY: this.heightCell * this.position.y,
-      duration: 1500,
-      easing: "easeInOutQuad"
-    });
-  }
-
-  backward() {
-    this.position.x = this.position.x + this.calculateBackwardXMovement();
-    this.position.y = this.position.y + this.calculateBackwardYMovement();
-
-    this.animationTimeLine.add({
-      targets: this.element,
-      translateX: this.widthCell * this.position.x,
-      translateY: this.heightCell * this.position.y,
-      duration: 1500,
-      easing: "easeInOutQuad"
-    });
-  }
-
-
-
-  turn(direction: number = 1) {
-    let angle = direction < 0 ? -45 : 45;
-    this.rotation = this.rotation + angle;
-
-    this.animationTimeLine.add({
-      targets: this.element,
-      rotate: this.rotation,
-      duration: 1500,
-      ease: "easeInOutQuad"
-    });
-  }
-
-
-
-  findElement(name: string): HTMLElement {
-    for (let element of this.element.childNodes) {
-      if (element.id === name) {
-        return element;
-      }
-    }
-  }
-
-  findElementIn(name: string, parentElement: HTMLElement): HTMLElement {
-    for (let element of parentElement.childNodes) {
-      if (element.id === name) {
-        return element;
-      }
-    }
-  }
-  headlights(on: boolean) {
-    let headlights = this.findElement("headlights");
-
-    let opacitiyGoal = on ? 1 : 0;
-
-    this.animationTimeLine.add({
-      targets: headlights,
-      opacity: opacitiyGoal,
-      duration: 2500,
-      easing: "linear"
-    });
-  }
-
-  backlights (on : boolean) {
-    let car = this.findElement("car")
-    let carbacklight = this.findElementIn("carbacklight", car);
-
-    this.animationTimeLine.add({
-      targets: carbacklight,
-      opacity: on ? 1 : 0,
-      duration: 500,
-      easing: "linear"
-    });
-    
-
+export class Goal {
+  protected isGoalMet : Boolean = false;
+  moved (_robot: Robot, _from: Position, _to: Position) {
 
   }
 
-  go() {    
-    // let sound = document.getElementById ("carsound");
-    // console.log (sound);
-    // sound.play();
+  finishedAt (_robot: Robot, _endPosition: Position ) {
 
-    this.animationTimeLine.play();
   }
-  drawOnCanvas() {
-    let newLeft = this.position.x * 100;
-    let newLeftString = newLeft.toString() + "px;";
-    this.element.style.left = newLeftString;
+
+  isSatified () : Boolean {
+    return this.isGoalMet;
   }
 }
+
+class GoalLevel1 extends Goal {
+  finishedAt (_robot: Robot, endPosition: Position ) {
+    console.log ("Goal level 1 aangeroepen");
+    this.isGoalMet = endPosition.x == 2 && endPosition.y == 0;
+  }
+}
+class GoalLevel2 extends Goal {
+  private hitPosition : boolean = false;
+  
+  moved (_robot: Robot, _from: Position, to: Position) {
+    this.hitPosition = this.hitPosition || (to.x == 1 && to.y == 2);
+  }
+
+  finishedAt (_robot: Robot, endPosition: Position ) {
+    this.isGoalMet = this.hitPosition && endPosition.x == 2 && endPosition.y == 0;
+  }
+}
+
+
+class GoalLevel3 extends GoalLevel2 {
+  finishedAt (robot: Robot, endPosition: Position ) {
+    super.finishedAt(robot, endPosition);
+    this.isGoalMet = robot.rotation === 315;
+  }
+}
+
 
 export class CellType {}
 
@@ -220,7 +67,8 @@ export class Level {
   private numberOfRows = 3;
 
   constructor(
-    canvases: [HTMLCanvasElement],
+    goal: Goal,
+    canvases: [HTMLElement],
     numberOfRows: number,
     numberOfColumns: number
   ) {
@@ -234,7 +82,7 @@ export class Level {
     let columnWidth = width / this.numberOColumns;
     let rowHeight = height / this.numberOfRows;
 
-    this.robot = new Robot(canvases[1], { x: 0, y: 0 }, columnWidth, rowHeight);
+    this.robot = new Robot(goal, canvases[1], { x: 0, y: 0 }, columnWidth, rowHeight);
   }
 
   draw() {
@@ -245,6 +93,7 @@ export class Level {
 
     let columnWidth = width / this.numberOColumns;
     let rowHeight = height / this.numberOfRows;
+    context.strokeStyle = "#FF0000";
 
     for (let i = 0; i !== this.numberOColumns; i++) {
       for (let j = 0; j !== this.numberOfRows; j++) {
@@ -255,7 +104,6 @@ export class Level {
     }
 
     this.robot.drawOnCanvas();
-    console.log (headLightsImage);
   }
 }
 
@@ -277,21 +125,37 @@ export class Game {
     this.numberOfRows = numberOfRows;
   }
 
-  makeLevel(element: HTMLElement): Level {
+  makeLevel(levelNumber: number, element: HTMLElement): Level {
     let code = this.createHTMLContainer();
     element.innerHTML = code;
 
     let canvas1 = document.getElementById("layer1") as HTMLCanvasElement;
     let canvas2 = document.getElementById("robot") as HTMLCanvasElement;
+    
+    if (levelNumber == 0) {
+      return this.makeLevel0(canvas1, canvas2);
+    }
+
+  }
+
+  private makeLevel0 (layer1 :HTMLElement, robot: HTMLElement) {
     let l = new Level(
-      [canvas1, canvas2],
+      new GoalLevel3(),
+      [layer1, robot],
       this.numberOfColumns,
       this.numberOfRows
     );
 
     l.draw();
+    let button = document.getElementById ("check");
+    console.log ("Button");
+    console.log (button);
+    button.onclick = function () {
+      l.robot.check();
+    }
 
     return l;
+
   }
 
   createHTMLContainer(): string {
@@ -357,6 +221,11 @@ export class Game {
     <source src="${carSound}"/>
     </audio>
 
+    <audio id="honk">
+    <source src="${honkSound}"/>
+    </audio>
+    
+    <button id="check">Click me</button>
     <div style="position: relative;">
      <canvas id="layer1" width="${this.width}" height="${this.height}" 
        style="position: absolute; left: 0; top: 0; z-index: 0;"></canvas>
@@ -370,6 +239,7 @@ export class Game {
         </div>
       </div>
      </div>
+     
     `;
 
     return htmlCode;
