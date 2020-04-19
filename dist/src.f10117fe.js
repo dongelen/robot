@@ -1883,7 +1883,28 @@ Object.defineProperty(exports, "__esModule", {
 
 var anime_es_js_1 = __importDefault(require("animejs/lib/anime.es.js"));
 
-var speed = 1200; // let speed = 500;
+var speed = 100; // let speed = 500;
+
+var Timemout =
+/** @class */
+function () {
+  function Timemout(time, robot) {
+    this.time = 0;
+    this.time = time;
+    this.robot = robot;
+  }
+
+  Timemout.prototype.timeout = function () {
+    var _this = this;
+
+    setTimeout(function () {
+      _this.robot.check(); // this.timeout();
+
+    }, this.time);
+  };
+
+  return Timemout;
+}();
 
 var Robot =
 /** @class */
@@ -2133,28 +2154,42 @@ function () {
     });
   };
 
-  Robot.prototype.go = function () {
-    this.doeIets();
-    var robot = this; // hack
+  Robot.prototype.totalTime = function () {
+    var total = 0;
 
-    this.animationTimeLine.add({
-      targets: this.element,
-      duration: 1,
-      begin: function begin(anim) {
-        console.log("Eind chekc"); // robot.goal.finishedAt(robot, robot.position);
-        // if (robot.goal.isSatified()) {
-        //   console.log ("Doel bereikt!!");
-        //   // alert ("Gelukt!");
-        //   robot.happy();
-        // }
-        // else {
-        //   alert ("Mislukt");
-        // }
-      }
-    });
+    for (var _i = 0, _a = this.animationTimeLine.children; _i < _a.length; _i++) {
+      var child = _a[_i];
+      console.log(child.duration);
+      total = total + child.duration;
+    }
+
+    return total;
+  };
+
+  Robot.prototype.go = function () {
+    this.timeOut = new Timemout(this.totalTime() + 10, this);
+    var robot = this; // hack
+    // this.animationTimeLine.add ({
+    //   targets: this.element,
+    //   duration: 1,
+    //   begin: function(anim) {
+    //     console.log ("Eind chekc");
+    //     // robot.goal.finishedAt(robot, robot.position);
+    //     // if (robot.goal.isSatified()) {
+    //     //   console.log ("Doel bereikt!!");
+    //     //   // alert ("Gelukt!");
+    //     //   robot.happy();
+    //     // }
+    //     // else {
+    //     //   alert ("Mislukt");
+    //     // }
+    //   }
+    // });
+
     var sound = document.getElementById("carsound"); // sound.play();
 
     this.animationTimeLine.play();
+    this.timeOut.timeout();
   };
 
   Robot.prototype.drawOnCanvas = function () {
@@ -2376,16 +2411,8 @@ function () {
   };
 
   Game.prototype.makeLevel0 = function (layer1, robot) {
-    var l = new Level(new GoalLevel1(), [layer1, robot], this.numberOfColumns, this.numberOfRows);
+    var l = new Level(new GoalLevel3(), [layer1, robot], this.numberOfColumns, this.numberOfRows);
     l.draw();
-    var button = document.getElementById("check");
-    console.log("Button");
-    console.log(button);
-
-    button.onclick = function () {
-      l.robot.check();
-    };
-
     return l;
   };
 
@@ -2396,7 +2423,7 @@ function () {
     var topHeadLights = middle - 36;
     var carWidthPx = "120px";
     var carHeightPx = "60px";
-    var htmlCode = "\n    \n\n    <style> \n    #robot {\n      width: " + carWidthPx + ";\n      height: " + carHeightPx + ";\n      left: " + middle + ";\n      top: " + verticalCenter + ";\n      position: relative;\n  \n    }\n\n    #car {\n      position: relative;\n      background-image: url(" + car3_png_1.default + ");\n      background-size: " + carWidthPx + " " + carHeightPx + "; \n      width: " + carWidthPx + ";\n      height: " + carHeightPx + ";\n    }\n    #carbacklight {\n      left: 0;\n      top: 0;\n      position: absolute;\n      background-image: url(" + car_backlights_png_1.default + ");\n      background-size: " + carWidthPx + " " + carHeightPx + "; \n      width: " + carWidthPx + ";\n      height: " + carHeightPx + ";\n      opacity: 0;\n    }\n\n    #headlights {\n      width: " + carWidthPx + ";\n      height: " + carHeightPx + ";\n      left: " + centerHeadLights + ";\n      top: " + topHeadLights + ";\n      position: absolute;\n      opacity : 0;\n      background-image: url(" + lights_png_1.default + ");\n      background-size: " + carWidthPx + " " + carHeightPx + "; \n    }\n\n    #layer1 {\n      //display: none;\n    }\n\n    body {\n      background-color: black;\n    }\n    </style>\n    <audio id=\"carsound\">\n    <source src=\"" + carsound_mp3_1.default + "\"/>\n    </audio>\n\n    <audio id=\"honk\">\n    <source src=\"" + honk_mp3_1.default + "\"/>\n    </audio>\n    \n    <audio id=\"oemp\">\n    <source src=\"" + oemp_mp3_1.default + "\"/>\n    </audio>\n\n    <button id=\"check\">Click me</button>\n    <div style=\"position: relative;\">\n     <canvas id=\"layer1\" width=\"" + this.width + "\" height=\"" + this.height + "\" \n       style=\"position: absolute; left: 0; top: 0; z-index: 0;\"></canvas>\n\n      <div id=\"robot\">  \n        <div id=\"headlights\"></div>\n\n        <div id=\"car\"> \n          <div id=\"carbacklight\"></div>\n\n        </div>\n      </div>\n     </div>\n     \n    ";
+    var htmlCode = "\n    \n\n    <style> \n    #robot {\n      width: " + carWidthPx + ";\n      height: " + carHeightPx + ";\n      left: " + middle + ";\n      top: " + verticalCenter + ";\n      position: relative;\n  \n    }\n\n    #car {\n      position: relative;\n      background-image: url(" + car3_png_1.default + ");\n      background-size: " + carWidthPx + " " + carHeightPx + "; \n      width: " + carWidthPx + ";\n      height: " + carHeightPx + ";\n    }\n    #carbacklight {\n      left: 0;\n      top: 0;\n      position: absolute;\n      background-image: url(" + car_backlights_png_1.default + ");\n      background-size: " + carWidthPx + " " + carHeightPx + "; \n      width: " + carWidthPx + ";\n      height: " + carHeightPx + ";\n      opacity: 0;\n    }\n\n    #headlights {\n      width: " + carWidthPx + ";\n      height: " + carHeightPx + ";\n      left: " + centerHeadLights + ";\n      top: " + topHeadLights + ";\n      position: absolute;\n      opacity : 0;\n      background-image: url(" + lights_png_1.default + ");\n      background-size: " + carWidthPx + " " + carHeightPx + "; \n    }\n\n    #layer1 {\n      //display: none;\n    }\n\n    body {\n      background-color: black;\n    }\n    </style>\n    <audio id=\"carsound\">\n    <source src=\"" + carsound_mp3_1.default + "\"/>\n    </audio>\n\n    <audio id=\"honk\">\n    <source src=\"" + honk_mp3_1.default + "\"/>\n    </audio>\n    \n    <audio id=\"oemp\">\n    <source src=\"" + oemp_mp3_1.default + "\"/>\n    </audio>\n\n    <div style=\"position: relative;\">\n     <canvas id=\"layer1\" width=\"" + this.width + "\" height=\"" + this.height + "\" \n       style=\"position: absolute; left: 0; top: 0; z-index: 0;\"></canvas>\n\n      <div id=\"robot\">  \n        <div id=\"headlights\"></div>\n\n        <div id=\"car\"> \n          <div id=\"carbacklight\"></div>\n\n        </div>\n      </div>\n     </div>\n     \n    ";
     return htmlCode;
   };
 
@@ -2417,50 +2444,27 @@ var game = new level_1.Game(400, 400, 3, 3);
 var level = game.makeLevel(0, document.getElementById("app"));
 var robot = level.robot;
 window.addEventListener("mousedown", function (event) {
-  t.timeout();
   robot.go();
 }); // Vanaf hier is de student aan de beurt
 // Meteen turn leidt tot een probleem!!
 // robot.blinkHeadlights(4)
-// robot.forward();
-// robot.backward();
-// robot.turn();
-// robot.turn();
-// robot.forward();
-// robot.forward();
-// robot.turn (-1);
-// robot.turn (-1);
-// robot.forward();
-// robot.forward();
-// robot.turn (-1);
-// robot.turn (-1);
-// robot.forward();
-// robot.forward();
-// robot.turn();
-// robot.backlights (true);
 
 robot.forward();
+robot.backward();
+robot.turn();
+robot.turn();
 robot.forward();
-
-var Test =
-/** @class */
-function () {
-  function Test() {}
-
-  Test.prototype.timeout = function () {
-    var _this = this;
-
-    setTimeout(function () {
-      robot.check();
-
-      _this.timeout();
-    }, 3000);
-  };
-
-  return Test;
-}();
-
-var t = new Test();
+robot.forward();
+robot.turn(-1);
+robot.turn(-1);
+robot.forward();
+robot.forward();
+robot.turn(-1);
+robot.turn(-1);
+robot.forward();
+robot.forward();
+robot.turn();
+robot.backlights(true);
 },{"./level":"src/level.ts"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -2489,7 +2493,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49363" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52235" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

@@ -141,19 +141,13 @@ export class Game {
 
   private makeLevel0 (layer1 :HTMLElement, robot: HTMLElement) {
     let l = new Level(
-      new GoalLevel1(),
+      new GoalLevel3(),
       [layer1, robot],
       this.numberOfColumns,
       this.numberOfRows
     );
 
     l.draw();
-    let button = document.getElementById ("check");
-    console.log ("Button");
-    console.log (button);
-    button.onclick = function () {
-      l.robot.check();
-    };
 
     return l;
 
@@ -230,7 +224,6 @@ export class Game {
     <source src="${oempSound}"/>
     </audio>
 
-    <button id="check">Click me</button>
     <div style="position: relative;">
      <canvas id="layer1" width="${this.width}" height="${this.height}" 
        style="position: absolute; left: 0; top: 0; z-index: 0;"></canvas>

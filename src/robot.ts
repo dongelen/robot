@@ -4,8 +4,25 @@ import anime from "animejs/lib/anime.es.js";
 import {Goal } from "./level";
 import {Position} from "./level";
 
-let speed = 1200;
+let speed = 100;
 // let speed = 500;
+
+class Timemout {
+  private time = 0;
+  private robot : Robot;
+  constructor (time : number, robot: Robot) {
+    this.time = time;
+    this.robot = robot;
+  }
+  timeout() {
+      setTimeout(() => {
+          this.robot.check();
+          
+          // this.timeout();
+      }, this.time);
+  } 
+     
+}
 
 export class Robot {
     public position: Position;
@@ -19,6 +36,7 @@ export class Robot {
     private isAnimationFinished = false;
   
     private goal: Goal;
+    private timeOut : Timemout;
 
     constructor(
       goal : Goal, 
@@ -274,36 +292,48 @@ export class Robot {
       }
     }
   
+
+    totalTime () : number {
+      var total = 0;
+      for (let child of this.animationTimeLine.children) {
+        console.log (child.duration);
+        total = total + child.duration;
+      }
+      return total;
+    }
+
     go() {    
-    
 
-      this.doeIets();      
 
+
+      this.timeOut = new Timemout(this.totalTime() + 10, this);
+      
       let robot = this; // hack
 
-      this.animationTimeLine.add ({
-        targets: this.element,
-        duration: 1,
-        begin: function(anim) {
-          console.log ("Eind chekc");
-          // robot.goal.finishedAt(robot, robot.position);
+      // this.animationTimeLine.add ({
+      //   targets: this.element,
+      //   duration: 1,
+      //   begin: function(anim) {
+      //     console.log ("Eind chekc");
+      //     // robot.goal.finishedAt(robot, robot.position);
 
-          // if (robot.goal.isSatified()) {
-          //   console.log ("Doel bereikt!!");
-          //   // alert ("Gelukt!");
-          //   robot.happy();
-          // }
-          // else {
-          //   alert ("Mislukt");
-          // }
-        }
-      });
+      //     // if (robot.goal.isSatified()) {
+      //     //   console.log ("Doel bereikt!!");
+      //     //   // alert ("Gelukt!");
+      //     //   robot.happy();
+      //     // }
+      //     // else {
+      //     //   alert ("Mislukt");
+      //     // }
+      //   }
+      // });
 
 
       let sound = document.getElementById ("carsound");
       // sound.play();
   
       this.animationTimeLine.play();
+      this.timeOut.timeout();
     }
     drawOnCanvas() {
       let newLeft = this.position.x * 100;
