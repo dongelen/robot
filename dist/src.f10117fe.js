@@ -2417,6 +2417,7 @@ var game = new level_1.Game(400, 400, 3, 3);
 var level = game.makeLevel(0, document.getElementById("app"));
 var robot = level.robot;
 window.addEventListener("mousedown", function (event) {
+  t.timeout();
   robot.go();
 }); // Vanaf hier is de student aan de beurt
 // Meteen turn leidt tot een probleem!!
@@ -2439,16 +2440,27 @@ window.addEventListener("mousedown", function (event) {
 // robot.backlights (true);
 
 robot.forward();
-robot.forward(); // class Test {
-//     timeout() {
-//         setTimeout(() => {
-//             console.log('Test');
-//             this.timeout();
-//         }, 3000);
-//     } 
-//  }
-//  let t = new Test();
-//  t.timeout();
+robot.forward();
+
+var Test =
+/** @class */
+function () {
+  function Test() {}
+
+  Test.prototype.timeout = function () {
+    var _this = this;
+
+    setTimeout(function () {
+      robot.check();
+
+      _this.timeout();
+    }, 3000);
+  };
+
+  return Test;
+}();
+
+var t = new Test();
 },{"./level":"src/level.ts"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -2477,7 +2489,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "65134" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49363" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

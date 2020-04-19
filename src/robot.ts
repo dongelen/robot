@@ -1,4 +1,6 @@
 import anime from "animejs/lib/anime.es.js";
+// import * as anime from 'animejs';
+
 import {Goal } from "./level";
 import {Position} from "./level";
 
@@ -11,7 +13,7 @@ export class Robot {
     private widthCell: number;
     private heightCell: number;
   
-    private animationTimeLine: any;
+    private animationTimeLine: AnimationTimeline;
   
     public rotation: number = 0;
     private isAnimationFinished = false;
