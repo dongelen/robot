@@ -123,6 +123,8 @@ module.exports = "/car3.43daa84c.png";
 module.exports = "/car_backlights.cd4c58c5.png";
 },{}],"public/lights.png":[function(require,module,exports) {
 module.exports = "/lights.446677cc.png";
+},{}],"public/background_level1.png":[function(require,module,exports) {
+module.exports = "/background_level1.d70056dd.png";
 },{}],"public/carsound.mp3":[function(require,module,exports) {
 module.exports = "/carsound.aa8a980e.mp3";
 },{}],"public/honk.mp3":[function(require,module,exports) {
@@ -2133,6 +2135,20 @@ function () {
     var soundName = sounds[Math.floor(Math.random() * sounds.length)];
     var sound = document.getElementById(soundName);
     sound.play();
+    anime_es_js_1.default({
+      targets: this.element,
+      rotate: 360,
+      duration: 1500,
+      scaleX: [{
+        value: 4,
+        duration: 100,
+        delay: 500,
+        easing: 'easeOutExpo'
+      }, {
+        value: 1,
+        duration: 900
+      }]
+    });
   };
 
   Robot.prototype.spin = function (direction) {
@@ -2236,6 +2252,8 @@ var car3_png_1 = __importDefault(require("/public/car3.png"));
 var car_backlights_png_1 = __importDefault(require("/public/car_backlights.png"));
 
 var lights_png_1 = __importDefault(require("/public/lights.png"));
+
+var background_level1_png_1 = __importDefault(require("/public/background_level1.png"));
 
 var carsound_mp3_1 = __importDefault(require("/public/carsound.mp3"));
 
@@ -2361,19 +2379,25 @@ function () {
     }, columnWidth, rowHeight);
   }
 
-  Level.prototype.draw = function () {
-    var width = this.canvas.width;
-    var height = this.canvas.height;
-    var context = this.canvas.getContext("2d");
-    var columnWidth = width / this.numberOColumns;
-    var rowHeight = height / this.numberOfRows;
-    context.strokeStyle = "#FF0000";
+  Level.prototype.draw = function (drawBones) {
+    if (drawBones === void 0) {
+      drawBones = false;
+    }
 
-    for (var i = 0; i !== this.numberOColumns; i++) {
-      for (var j = 0; j !== this.numberOfRows; j++) {
-        context.beginPath();
-        context.rect(i * columnWidth, j * rowHeight, columnWidth, rowHeight);
-        context.stroke();
+    if (drawBones) {
+      var width = this.canvas.width;
+      var height = this.canvas.height;
+      var context = this.canvas.getContext("2d");
+      var columnWidth = width / this.numberOColumns;
+      var rowHeight = height / this.numberOfRows;
+      context.strokeStyle = "#FF0000";
+
+      for (var i = 0; i !== this.numberOColumns; i++) {
+        for (var j = 0; j !== this.numberOfRows; j++) {
+          context.beginPath();
+          context.rect(i * columnWidth, j * rowHeight, columnWidth, rowHeight);
+          context.stroke();
+        }
       }
     }
 
@@ -2434,7 +2458,9 @@ function () {
     var topHeadLights = middle - carHeight;
     var carWidthPx = carWidth + "px";
     var carHeightPx = carHeight + "px";
-    var htmlCode = "\n    \n\n    <style> \n    #robot {\n      width: " + carWidthPx + ";\n      height: " + carHeightPx + ";\n      left: " + middle + ";\n      top: " + verticalCenter + ";\n      position: relative;\n  \n    }\n\n    #car {\n      position: relative;\n      background-image: url(" + car3_png_1.default + ");\n      background-size: " + carWidthPx + " " + carHeightPx + "; \n      width: " + carWidthPx + ";\n      height: " + carHeightPx + ";\n    }\n    #carbacklight {\n      left: 0;\n      top: 0;\n      position: absolute;\n      background-image: url(" + car_backlights_png_1.default + ");\n      background-size: " + carWidthPx + " " + carHeightPx + "; \n      width: " + carWidthPx + ";\n      height: " + carHeightPx + ";\n      opacity: 0;\n    }\n\n    #headlights {\n      width: " + carWidthPx + ";\n      height: " + carHeightPx + ";\n      left: " + centerHeadLights + ";\n      top: " + topHeadLights + ";\n      position: absolute;\n      opacity : 0;\n      background-image: url(" + lights_png_1.default + ");\n      background-size: " + carWidthPx + " " + carHeightPx + "; \n    }\n\n    #layer1 {\n      //display: none;\n    }\n\n    body {\n      background-color: black;\n    }\n    </style>\n    <audio id=\"carsound\">\n    <source src=\"" + carsound_mp3_1.default + "\"/>\n    </audio>\n\n    <audio id=\"honk\">\n    <source src=\"" + honk_mp3_1.default + "\"/>\n    </audio>\n    \n    <audio id=\"j1\">\n    <source src=\"" + j1_mp3_1.default + "\"/>\n    </audio>\n\n    <audio id=\"j2\">\n    <source src=\"" + j2_mp3_1.default + "\"/>\n    </audio>\n\n    <audio id=\"j3\">\n    <source src=\"" + j3_mp3_1.default + "\"/>\n    </audio>\n    \n    <audio id=\"j4\">\n    <source src=\"" + j4_mp3_1.default + "\"/>\n    </audio>\n\n    <div style=\"position: relative;\">\n     <canvas id=\"layer1\" width=\"" + width + "\" height=\"" + height + "\" \n       style=\"position: absolute; left: 0; top: 0; z-index: 0;\"></canvas>\n\n      <div id=\"robot\">  \n        <div id=\"headlights\"></div>\n\n        <div id=\"car\"> \n          <div id=\"carbacklight\"></div>\n\n        </div>\n      </div>\n     </div>\n     \n    ";
+    var widthPx = width + "px";
+    var heightPx = height + "px";
+    var htmlCode = "\n  \n\n    <style> \n    #robot {\n      width: " + carWidthPx + ";\n      height: " + carHeightPx + ";\n      left: " + middle + ";\n      top: " + verticalCenter + ";\n      position: relative;\n  \n    }\n\n    #car {\n      position: relative;\n      background-image: url(" + car3_png_1.default + ");\n      background-size: " + carWidthPx + " " + carHeightPx + "; \n      width: " + carWidthPx + ";\n      height: " + carHeightPx + ";\n    }\n    #carbacklight {\n      left: 0;\n      top: 0;\n      position: absolute;\n      background-image: url(" + car_backlights_png_1.default + ");\n      background-size: " + carWidthPx + " " + carHeightPx + "; \n      width: " + carWidthPx + ";\n      height: " + carHeightPx + ";\n      opacity: 0;\n    }\n\n    #headlights {\n      width: " + carWidthPx + ";\n      height: " + carHeightPx + ";\n      left: " + centerHeadLights + ";\n      top: " + topHeadLights + ";\n      position: absolute;\n      opacity : 0;\n      background-image: url(" + lights_png_1.default + ");\n      background-size: " + carWidthPx + " " + carHeightPx + "; \n    }\n\n    #layer1 {\n      //display: none;\n      background-image: url(" + background_level1_png_1.default + ");\n      background-size: " + widthPx + " " + heightPx + ";\n    }\n    h1 {\n      color: white;\n    }\n\n    body {\n      background-color: black;\n    }\n    </style>\n    <audio id=\"carsound\">\n    <source src=\"" + carsound_mp3_1.default + "\"/>\n    </audio>\n\n    <audio id=\"honk\">\n    <source src=\"" + honk_mp3_1.default + "\"/>\n    </audio>\n    \n    <audio id=\"j1\">\n    <source src=\"" + j1_mp3_1.default + "\"/>\n    </audio>\n\n    <audio id=\"j2\">\n    <source src=\"" + j2_mp3_1.default + "\"/>\n    </audio>\n\n    <audio id=\"j3\">\n    <source src=\"" + j3_mp3_1.default + "\"/>\n    </audio>\n\n    <audio id=\"j4\">\n    <source src=\"" + j4_mp3_1.default + "\"/>\n    </audio>\n    <h1>Roadtrippin</h1>\n\n    <div style=\"position: relative;\">\n    \n     <canvas id=\"layer1\" width=\"" + width + "\" height=\"" + height + "\" \n       style=\"position: absolute; left: 0; top: 0; z-index: 0;\"></canvas>\n\n      <div id=\"robot\">  \n        <div id=\"headlights\"></div>\n\n        <div id=\"car\"> \n          <div id=\"carbacklight\"></div>\n\n        </div>\n      </div>\n     </div>\n     \n    ";
     return htmlCode;
   };
 
@@ -2447,7 +2473,7 @@ exports.game = game;
 window.addEventListener("mousedown", function (event) {
   game.currentLevel.car.go();
 });
-},{"/public/car3.png":"public/car3.png","/public/car_backlights.png":"public/car_backlights.png","/public/lights.png":"public/lights.png","/public/carsound.mp3":"public/carsound.mp3","/public/honk.mp3":"public/honk.mp3","/public/j1.mp3":"public/j1.mp3","/public/j2.mp3":"public/j2.mp3","/public/j3.mp3":"public/j3.mp3","/public/j4.mp3":"public/j4.mp3","./robot":"src/robot.ts"}],"src/index.ts":[function(require,module,exports) {
+},{"/public/car3.png":"public/car3.png","/public/car_backlights.png":"public/car_backlights.png","/public/lights.png":"public/lights.png","/public/background_level1.png":"public/background_level1.png","/public/carsound.mp3":"public/carsound.mp3","/public/honk.mp3":"public/honk.mp3","/public/j1.mp3":"public/j1.mp3","/public/j2.mp3":"public/j2.mp3","/public/j3.mp3":"public/j3.mp3","/public/j4.mp3":"public/j4.mp3","./robot":"src/robot.ts"}],"src/index.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2499,7 +2525,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49851" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57527" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

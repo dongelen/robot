@@ -267,6 +267,17 @@ export class Robot {
 
       let sound = document.getElementById (soundName) as HTMLAudioElement;
       sound.play();
+
+      anime ({
+        targets: this.element,
+        rotate: 360,
+        duration: 1500,
+        scaleX: [
+          { value: 4, duration: 100, delay: 500, easing: 'easeOutExpo' },
+          { value: 1, duration: 900 }
+        ]
+        
+      });
     }
 
     spin (direction : number) {

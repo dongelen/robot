@@ -3,6 +3,8 @@ import carImage from "/public/car3.png";
 import carBacklightImage from "/public/car_backlights.png";
 import headLightsImage from "/public/lights.png";
 
+import background_level1 from "/public/background_level1.png"
+
 import carSound from "/public/carsound.mp3";
 import honkSound from "/public/honk.mp3";
 import j1 from "/public/j1.mp3";
@@ -92,23 +94,25 @@ export class Level {
     this.car = new Car(goal, this.canvases[1], { x: 0, y: 0 }, columnWidth, rowHeight);
   }
 
-  draw() {
-    let width = this.canvas.width;
-    let height = this.canvas.height;
+  draw(drawBones = false) {
+    if (drawBones) {
+      let width = this.canvas.width;
+      let height = this.canvas.height;
 
-    let context = this.canvas.getContext("2d")!;
+      let context = this.canvas.getContext("2d")!;
 
 
-    let columnWidth = width / this.numberOColumns;
-    let rowHeight = height / this.numberOfRows;
+      let columnWidth = width / this.numberOColumns;
+      let rowHeight = height / this.numberOfRows;
 
-    context.strokeStyle = "#FF0000";
+      context.strokeStyle = "#FF0000";
 
-    for (let i = 0; i !== this.numberOColumns; i++) {
-      for (let j = 0; j !== this.numberOfRows; j++) {
-        context.beginPath();
-        context.rect(i * columnWidth, j * rowHeight, columnWidth, rowHeight);
-        context.stroke();
+      for (let i = 0; i !== this.numberOColumns; i++) {
+        for (let j = 0; j !== this.numberOfRows; j++) {
+          context.beginPath();
+          context.rect(i * columnWidth, j * rowHeight, columnWidth, rowHeight);
+          context.stroke();
+        }
       }
     }
 
@@ -196,8 +200,10 @@ export class Game {
     let carWidthPx = carWidth + "px";
     let carHeightPx = carHeight + "px";
     
+    let widthPx = width + "px";
+    let heightPx = height + "px";
     let htmlCode = `
-    
+  
 
     <style> 
     #robot {
@@ -240,6 +246,11 @@ export class Game {
 
     #layer1 {
       //display: none;
+      background-image: url(${background_level1});
+      background-size: ${widthPx} ${heightPx};
+    }
+    h1 {
+      color: white;
     }
 
     body {
@@ -265,12 +276,14 @@ export class Game {
     <audio id="j3">
     <source src="${j3}"/>
     </audio>
-    
+
     <audio id="j4">
     <source src="${j4}"/>
     </audio>
+    <h1>Roadtrippin</h1>
 
     <div style="position: relative;">
+    
      <canvas id="layer1" width="${width}" height="${height}" 
        style="position: absolute; left: 0; top: 0; z-index: 0;"></canvas>
 
