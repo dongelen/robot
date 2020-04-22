@@ -1,12 +1,17 @@
-import anime from "animejs/lib/anime.es.js";
+
 import carImage from "/public/car3.png";
 import carBacklightImage from "/public/car_backlights.png";
 import headLightsImage from "/public/lights.png";
 
 import carSound from "/public/carsound.mp3";
 import honkSound from "/public/honk.mp3";
-import oempSound from "/public/oemp.mp3";
-import { Robot } from "./robot";
+import j1 from "/public/j1.mp3";
+import j2 from "/public/j2.mp3";
+import j3 from "/public/j3.mp3";
+import j4 from "/public/j4.mp3";
+
+
+import { Robot as Car } from "./robot";
 
 export interface Position {
   x: number;
@@ -16,11 +21,11 @@ export interface Position {
 
 export class Goal {
   protected isGoalMet : Boolean = false;
-  moved (_robot: Robot, _from: Position, _to: Position) {
+  moved (_robot: Car, _from: Position, _to: Position) {
 
   }
 
-  finishedAt (_robot: Robot, _endPosition: Position ) {
+  finishedAt (_robot: Car, _endPosition: Position ) {
 
   }
 
@@ -30,26 +35,25 @@ export class Goal {
 }
 
 class GoalLevel1 extends Goal {
-  finishedAt (_robot: Robot, endPosition: Position ) {
-    console.log ("Goal level 1 aangeroepen");
+  finishedAt (_robot: Car, endPosition: Position ) {
     this.isGoalMet = endPosition.x == 2 && endPosition.y == 0;
   }
 }
 class GoalLevel2 extends Goal {
   private hitPosition : boolean = false;
   
-  moved (_robot: Robot, _from: Position, to: Position) {
-    this.hitPosition = this.hitPosition || (to.x == 1 && to.y == 2);
+  moved (_robot: Car, _from: Position, to: Position) {    
+    this.hitPosition = this.hitPosition || (to.x == 1 && to.y == 1);
   }
 
-  finishedAt (_robot: Robot, endPosition: Position ) {
+  finishedAt (_robot: Car, endPosition: Position ) {
     this.isGoalMet = this.hitPosition && endPosition.x == 2 && endPosition.y == 0;
   }
 }
 
 
 class GoalLevel3 extends GoalLevel2 {
-  finishedAt (robot: Robot, endPosition: Position ) {
+  finishedAt (robot: Car, endPosition: Position ) {
     super.finishedAt(robot, endPosition);
     this.isGoalMet = robot.rotation === 315;
   }
@@ -59,22 +63,21 @@ class GoalLevel3 extends GoalLevel2 {
 export class CellType {}
 
 export class Level {
-  public fields: [CellType] = [];
-  private canvases: [HTMLCanvasElement];
+  public fields: CellType[] = [];
+  private canvases: HTMLElement[];
   private canvas: HTMLCanvasElement;
-  readonly robot: Robot;
+  readonly car: Car;
 
   private numberOColumns = 3;
   private numberOfRows = 3;
 
   constructor(
     goal: Goal,
-    canvases: [HTMLElement],
+    canvases: HTMLElement[],
     numberOfRows: number,
     numberOfColumns: number
   ) {
-    console.log("New level");
-    this.canvas = canvases[0];
+    this.canvas = canvases[0] as HTMLCanvasElement;
     this.fields = [new CellType()];
     this.numberOColumns = numberOfColumns;
     this.numberOfRows = numberOfRows;
@@ -82,18 +85,23 @@ export class Level {
     let height = this.canvas.height;
     let columnWidth = width / this.numberOColumns;
     let rowHeight = height / this.numberOfRows;
+    this.canvases = canvases;
 
-    this.robot = new Robot(goal, canvases[1], { x: 0, y: 0 }, columnWidth, rowHeight);
+    let robotElement = canvases[1];
+
+    this.car = new Car(goal, this.canvases[1], { x: 0, y: 0 }, columnWidth, rowHeight);
   }
 
   draw() {
     let width = this.canvas.width;
     let height = this.canvas.height;
 
-    let context = this.canvas.getContext("2d");
+    let context = this.canvas.getContext("2d")!;
+
 
     let columnWidth = width / this.numberOColumns;
     let rowHeight = height / this.numberOfRows;
+
     context.strokeStyle = "#FF0000";
 
     for (let i = 0; i !== this.numberOColumns; i++) {
@@ -104,47 +112,67 @@ export class Level {
       }
     }
 
-    this.robot.drawOnCanvas();
+    this.car.drawOnCanvas();
   }
 }
 
 export class Game {
-  private height: number;
-  private width: number;
-  private numberOfColumns: number;
-  private numberOfRows: number;
+  private gameElement : HTMLElement;
+  public currentLevel : Level;
 
   constructor(
-    width: number,
-    height: number,
-    numberOfColumns: number,
-    numberOfRows: number
+    element : HTMLElement, 
   ) {
-    this.height = height;
-    this.width = width;
-    this.numberOfColumns = numberOfColumns;
-    this.numberOfRows = numberOfRows;
+    this.gameElement = element;
+    this.currentLevel = this.level1();
   }
 
-  makeLevel(levelNumber: number, element: HTMLElement): Level {
-    let code = this.createHTMLContainer();
+
+  level1 () : Level {
+    this.currentLevel = this.makeLevel0 (this.gameElement);
+    return this.currentLevel;
+  }
+
+  level2 () : Level {
+    this.currentLevel = this.makeLevel1 (this.gameElement);
+    return this.currentLevel;
+  }
+
+
+
+  private makeLevel0 (element: HTMLElement) {
+    let code = this.createHTMLContainer(700, 200, 1, 3);
     element.innerHTML = code;
 
-    let canvas1 = document.getElementById("layer1") as HTMLCanvasElement;
-    let canvas2 = document.getElementById("robot") as HTMLCanvasElement;
+    let level1 = document.getElementById("layer1") as HTMLCanvasElement;
+    let robot = document.getElementById("robot") as HTMLCanvasElement;
     
-    if (levelNumber == 0) {
-      return this.makeLevel0(canvas1, canvas2);
-    }
+    let l = new Level(
+      new GoalLevel1(),
+      [level1, robot],
+      1,
+      3
+    );
 
+    l.draw();
+
+    return l;
   }
 
-  private makeLevel0 (layer1 :HTMLElement, robot: HTMLElement) {
+  private makeLevel1 (element: HTMLElement) {
+    let nr = 2;
+    let nc = 3
+    let code = this.createHTMLContainer(700, 400, nr, nc);
+    element.innerHTML = code;
+
+    let level1 = document.getElementById("layer1") as HTMLCanvasElement;
+    let robot = document.getElementById("robot") as HTMLCanvasElement;
+    
     let l = new Level(
-      new GoalLevel3(),
-      [layer1, robot],
-      this.numberOfColumns,
-      this.numberOfRows
+      new GoalLevel2(),
+      [level1, robot],
+      nr,
+      nc
     );
 
     l.draw();
@@ -153,14 +181,20 @@ export class Game {
 
   }
 
-  createHTMLContainer(): string {
-    let middle = this.width / this.numberOfColumns / 2 - 30;
-    let verticalCenter = this.height / this.numberOfRows / 2 - 15;
 
-    let centerHeadLights = verticalCenter + 40;
-    let topHeadLights = middle - 36;
-    let carWidthPx = "120px";
-    let carHeightPx = "60px";
+  createHTMLContainer(width: number, height: number, numberOfRows : number, numberOfColumns : number): string {
+    let carWidth = width / 2 / numberOfColumns;
+    let carHeight = carWidth / 2;
+
+    let middle = width / numberOfColumns / 2 - carWidth / 2;
+    let verticalCenter = height / numberOfRows / 2 - carHeight / 2;
+
+    let centerHeadLights = verticalCenter ;
+    let topHeadLights = middle - carHeight;
+
+    
+    let carWidthPx = carWidth + "px";
+    let carHeightPx = carHeight + "px";
     
     let htmlCode = `
     
@@ -220,12 +254,24 @@ export class Game {
     <source src="${honkSound}"/>
     </audio>
     
-    <audio id="oemp">
-    <source src="${oempSound}"/>
+    <audio id="j1">
+    <source src="${j1}"/>
+    </audio>
+
+    <audio id="j2">
+    <source src="${j2}"/>
+    </audio>
+
+    <audio id="j3">
+    <source src="${j3}"/>
+    </audio>
+    
+    <audio id="j4">
+    <source src="${j4}"/>
     </audio>
 
     <div style="position: relative;">
-     <canvas id="layer1" width="${this.width}" height="${this.height}" 
+     <canvas id="layer1" width="${width}" height="${height}" 
        style="position: absolute; left: 0; top: 0; z-index: 0;"></canvas>
 
       <div id="robot">  
@@ -243,3 +289,12 @@ export class Game {
     return htmlCode;
   }
 }
+
+let game = new Game(document.getElementById("app") as HTMLElement, 700, 700, 3, 3);
+
+
+window.addEventListener("mousedown",function(event) {
+  game.currentLevel.car.go();
+ });
+
+export { game };

@@ -127,8 +127,14 @@ module.exports = "/lights.446677cc.png";
 module.exports = "/carsound.aa8a980e.mp3";
 },{}],"public/honk.mp3":[function(require,module,exports) {
 module.exports = "/honk.8306c902.mp3";
-},{}],"public/oemp.mp3":[function(require,module,exports) {
-module.exports = "/oemp.0e1cfc80.mp3";
+},{}],"public/j1.mp3":[function(require,module,exports) {
+module.exports = "/j1.98e35bea.mp3";
+},{}],"public/j2.mp3":[function(require,module,exports) {
+module.exports = "/j2.5d8288e0.mp3";
+},{}],"public/j3.mp3":[function(require,module,exports) {
+module.exports = "/j3.66add5f1.mp3";
+},{}],"public/j4.mp3":[function(require,module,exports) {
+module.exports = "/j4.5862f33f.mp3";
 },{}],"node_modules/animejs/lib/anime.es.js":[function(require,module,exports) {
 "use strict";
 
@@ -1881,9 +1887,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var anime_es_js_1 = __importDefault(require("animejs/lib/anime.es.js"));
+var anime_es_js_1 = __importDefault(require("animejs/lib/anime.es.js")); // let speed = 500;
 
-var speed = 100; // let speed = 500;
 
 var Timemout =
 /** @class */
@@ -1898,8 +1903,7 @@ function () {
     var _this = this;
 
     setTimeout(function () {
-      _this.robot.check(); // this.timeout();
-
+      _this.robot.check();
     }, this.time);
   };
 
@@ -1910,26 +1914,10 @@ var Robot =
 /** @class */
 function () {
   function Robot(goal, element, position, widthCell, heightCell) {
-    var _this = this;
-
     this.rotation = 0;
+    this.speed = 100;
     this.isAnimationFinished = false;
-
-    this.endAnimation = function (anim) {
-      console.log("%%%%%%%%%% End animation");
-      console.log(_this.position.x + " " + _this.position.y);
-      console.log(_this);
-
-      _this.goal.finishedAt(_this, _this.position);
-
-      if (_this.goal.isSatified()) {
-        console.log("Doel bereikt!!");
-        alert("Gelukt!");
-      } else {
-        alert("Mislukt");
-      }
-    };
-
+    this.timeOut = undefined;
     this.position = position;
     this.element = element;
     this.widthCell = widthCell;
@@ -2027,7 +2015,7 @@ function () {
       targets: this.element,
       translateX: this.widthCell * this.position.x,
       translateY: this.heightCell * this.position.y,
-      duration: speed,
+      duration: this.speed,
       easing: "easeInOutQuad"
     });
   };
@@ -2041,7 +2029,7 @@ function () {
       targets: this.element,
       translateX: this.widthCell * this.position.x,
       translateY: this.heightCell * this.position.y,
-      duration: speed,
+      duration: this.speed,
       easing: "easeInOutQuad"
     });
   };
@@ -2056,7 +2044,7 @@ function () {
     this.animationTimeLine.add({
       targets: this.element,
       rotate: this.rotation,
-      duration: speed,
+      duration: this.speed,
       ease: "easeInOutQuad"
     });
   };
@@ -2141,7 +2129,9 @@ function () {
   };
 
   Robot.prototype.happy = function () {
-    var sound = document.getElementById("oemp");
+    var sounds = ["j1", "j2", "j3", "j4"];
+    var soundName = sounds[Math.floor(Math.random() * sounds.length)];
+    var sound = document.getElementById(soundName);
     sound.play();
   };
 
@@ -2159,7 +2149,6 @@ function () {
 
     for (var _i = 0, _a = this.animationTimeLine.children; _i < _a.length; _i++) {
       var child = _a[_i];
-      console.log(child.duration);
       total = total + child.duration;
     }
 
@@ -2193,9 +2182,10 @@ function () {
   };
 
   Robot.prototype.drawOnCanvas = function () {
+    var divElement = this.element;
     var newLeft = this.position.x * 100;
     var newLeftString = newLeft.toString() + "px;";
-    this.element.style.left = newLeftString;
+    divElement.style.left = newLeftString;
   };
 
   return Robot;
@@ -2251,7 +2241,13 @@ var carsound_mp3_1 = __importDefault(require("/public/carsound.mp3"));
 
 var honk_mp3_1 = __importDefault(require("/public/honk.mp3"));
 
-var oemp_mp3_1 = __importDefault(require("/public/oemp.mp3"));
+var j1_mp3_1 = __importDefault(require("/public/j1.mp3"));
+
+var j2_mp3_1 = __importDefault(require("/public/j2.mp3"));
+
+var j3_mp3_1 = __importDefault(require("/public/j3.mp3"));
+
+var j4_mp3_1 = __importDefault(require("/public/j4.mp3"));
 
 var robot_1 = require("./robot");
 
@@ -2285,7 +2281,6 @@ function (_super) {
   }
 
   GoalLevel1.prototype.finishedAt = function (_robot, endPosition) {
-    console.log("Goal level 1 aangeroepen");
     this.isGoalMet = endPosition.x == 2 && endPosition.y == 0;
   };
 
@@ -2305,7 +2300,7 @@ function (_super) {
   }
 
   GoalLevel2.prototype.moved = function (_robot, _from, to) {
-    this.hitPosition = this.hitPosition || to.x == 1 && to.y == 2;
+    this.hitPosition = this.hitPosition || to.x == 1 && to.y == 1;
   };
 
   GoalLevel2.prototype.finishedAt = function (_robot, endPosition) {
@@ -2350,7 +2345,6 @@ function () {
     this.fields = [];
     this.numberOColumns = 3;
     this.numberOfRows = 3;
-    console.log("New level");
     this.canvas = canvases[0];
     this.fields = [new CellType()];
     this.numberOColumns = numberOfColumns;
@@ -2359,7 +2353,9 @@ function () {
     var height = this.canvas.height;
     var columnWidth = width / this.numberOColumns;
     var rowHeight = height / this.numberOfRows;
-    this.robot = new robot_1.Robot(goal, canvases[1], {
+    this.canvases = canvases;
+    var robotElement = canvases[1];
+    this.car = new robot_1.Robot(goal, this.canvases[1], {
       x: 0,
       y: 0
     }, columnWidth, rowHeight);
@@ -2381,7 +2377,7 @@ function () {
       }
     }
 
-    this.robot.drawOnCanvas();
+    this.car.drawOnCanvas();
   };
 
   return Level;
@@ -2392,38 +2388,53 @@ exports.Level = Level;
 var Game =
 /** @class */
 function () {
-  function Game(width, height, numberOfColumns, numberOfRows) {
-    this.height = height;
-    this.width = width;
-    this.numberOfColumns = numberOfColumns;
-    this.numberOfRows = numberOfRows;
+  function Game(element) {
+    this.gameElement = element;
+    this.currentLevel = this.level1();
   }
 
-  Game.prototype.makeLevel = function (levelNumber, element) {
-    var code = this.createHTMLContainer();
-    element.innerHTML = code;
-    var canvas1 = document.getElementById("layer1");
-    var canvas2 = document.getElementById("robot");
-
-    if (levelNumber == 0) {
-      return this.makeLevel0(canvas1, canvas2);
-    }
+  Game.prototype.level1 = function () {
+    this.currentLevel = this.makeLevel0(this.gameElement);
+    return this.currentLevel;
   };
 
-  Game.prototype.makeLevel0 = function (layer1, robot) {
-    var l = new Level(new GoalLevel3(), [layer1, robot], this.numberOfColumns, this.numberOfRows);
+  Game.prototype.level2 = function () {
+    this.currentLevel = this.makeLevel1(this.gameElement);
+    return this.currentLevel;
+  };
+
+  Game.prototype.makeLevel0 = function (element) {
+    var code = this.createHTMLContainer(700, 200, 1, 3);
+    element.innerHTML = code;
+    var level1 = document.getElementById("layer1");
+    var robot = document.getElementById("robot");
+    var l = new Level(new GoalLevel1(), [level1, robot], 1, 3);
     l.draw();
     return l;
   };
 
-  Game.prototype.createHTMLContainer = function () {
-    var middle = this.width / this.numberOfColumns / 2 - 30;
-    var verticalCenter = this.height / this.numberOfRows / 2 - 15;
-    var centerHeadLights = verticalCenter + 40;
-    var topHeadLights = middle - 36;
-    var carWidthPx = "120px";
-    var carHeightPx = "60px";
-    var htmlCode = "\n    \n\n    <style> \n    #robot {\n      width: " + carWidthPx + ";\n      height: " + carHeightPx + ";\n      left: " + middle + ";\n      top: " + verticalCenter + ";\n      position: relative;\n  \n    }\n\n    #car {\n      position: relative;\n      background-image: url(" + car3_png_1.default + ");\n      background-size: " + carWidthPx + " " + carHeightPx + "; \n      width: " + carWidthPx + ";\n      height: " + carHeightPx + ";\n    }\n    #carbacklight {\n      left: 0;\n      top: 0;\n      position: absolute;\n      background-image: url(" + car_backlights_png_1.default + ");\n      background-size: " + carWidthPx + " " + carHeightPx + "; \n      width: " + carWidthPx + ";\n      height: " + carHeightPx + ";\n      opacity: 0;\n    }\n\n    #headlights {\n      width: " + carWidthPx + ";\n      height: " + carHeightPx + ";\n      left: " + centerHeadLights + ";\n      top: " + topHeadLights + ";\n      position: absolute;\n      opacity : 0;\n      background-image: url(" + lights_png_1.default + ");\n      background-size: " + carWidthPx + " " + carHeightPx + "; \n    }\n\n    #layer1 {\n      //display: none;\n    }\n\n    body {\n      background-color: black;\n    }\n    </style>\n    <audio id=\"carsound\">\n    <source src=\"" + carsound_mp3_1.default + "\"/>\n    </audio>\n\n    <audio id=\"honk\">\n    <source src=\"" + honk_mp3_1.default + "\"/>\n    </audio>\n    \n    <audio id=\"oemp\">\n    <source src=\"" + oemp_mp3_1.default + "\"/>\n    </audio>\n\n    <div style=\"position: relative;\">\n     <canvas id=\"layer1\" width=\"" + this.width + "\" height=\"" + this.height + "\" \n       style=\"position: absolute; left: 0; top: 0; z-index: 0;\"></canvas>\n\n      <div id=\"robot\">  \n        <div id=\"headlights\"></div>\n\n        <div id=\"car\"> \n          <div id=\"carbacklight\"></div>\n\n        </div>\n      </div>\n     </div>\n     \n    ";
+  Game.prototype.makeLevel1 = function (element) {
+    var nr = 2;
+    var nc = 3;
+    var code = this.createHTMLContainer(700, 400, nr, nc);
+    element.innerHTML = code;
+    var level1 = document.getElementById("layer1");
+    var robot = document.getElementById("robot");
+    var l = new Level(new GoalLevel2(), [level1, robot], nr, nc);
+    l.draw();
+    return l;
+  };
+
+  Game.prototype.createHTMLContainer = function (width, height, numberOfRows, numberOfColumns) {
+    var carWidth = width / 2 / numberOfColumns;
+    var carHeight = carWidth / 2;
+    var middle = width / numberOfColumns / 2 - carWidth / 2;
+    var verticalCenter = height / numberOfRows / 2 - carHeight / 2;
+    var centerHeadLights = verticalCenter;
+    var topHeadLights = middle - carHeight;
+    var carWidthPx = carWidth + "px";
+    var carHeightPx = carHeight + "px";
+    var htmlCode = "\n    \n\n    <style> \n    #robot {\n      width: " + carWidthPx + ";\n      height: " + carHeightPx + ";\n      left: " + middle + ";\n      top: " + verticalCenter + ";\n      position: relative;\n  \n    }\n\n    #car {\n      position: relative;\n      background-image: url(" + car3_png_1.default + ");\n      background-size: " + carWidthPx + " " + carHeightPx + "; \n      width: " + carWidthPx + ";\n      height: " + carHeightPx + ";\n    }\n    #carbacklight {\n      left: 0;\n      top: 0;\n      position: absolute;\n      background-image: url(" + car_backlights_png_1.default + ");\n      background-size: " + carWidthPx + " " + carHeightPx + "; \n      width: " + carWidthPx + ";\n      height: " + carHeightPx + ";\n      opacity: 0;\n    }\n\n    #headlights {\n      width: " + carWidthPx + ";\n      height: " + carHeightPx + ";\n      left: " + centerHeadLights + ";\n      top: " + topHeadLights + ";\n      position: absolute;\n      opacity : 0;\n      background-image: url(" + lights_png_1.default + ");\n      background-size: " + carWidthPx + " " + carHeightPx + "; \n    }\n\n    #layer1 {\n      //display: none;\n    }\n\n    body {\n      background-color: black;\n    }\n    </style>\n    <audio id=\"carsound\">\n    <source src=\"" + carsound_mp3_1.default + "\"/>\n    </audio>\n\n    <audio id=\"honk\">\n    <source src=\"" + honk_mp3_1.default + "\"/>\n    </audio>\n    \n    <audio id=\"j1\">\n    <source src=\"" + j1_mp3_1.default + "\"/>\n    </audio>\n\n    <audio id=\"j2\">\n    <source src=\"" + j2_mp3_1.default + "\"/>\n    </audio>\n\n    <audio id=\"j3\">\n    <source src=\"" + j3_mp3_1.default + "\"/>\n    </audio>\n    \n    <audio id=\"j4\">\n    <source src=\"" + j4_mp3_1.default + "\"/>\n    </audio>\n\n    <div style=\"position: relative;\">\n     <canvas id=\"layer1\" width=\"" + width + "\" height=\"" + height + "\" \n       style=\"position: absolute; left: 0; top: 0; z-index: 0;\"></canvas>\n\n      <div id=\"robot\">  \n        <div id=\"headlights\"></div>\n\n        <div id=\"car\"> \n          <div id=\"carbacklight\"></div>\n\n        </div>\n      </div>\n     </div>\n     \n    ";
     return htmlCode;
   };
 
@@ -2431,40 +2442,35 @@ function () {
 }();
 
 exports.Game = Game;
-},{"/public/car3.png":"public/car3.png","/public/car_backlights.png":"public/car_backlights.png","/public/lights.png":"public/lights.png","/public/carsound.mp3":"public/carsound.mp3","/public/honk.mp3":"public/honk.mp3","/public/oemp.mp3":"public/oemp.mp3","./robot":"src/robot.ts"}],"src/index.ts":[function(require,module,exports) {
+var game = new Game(document.getElementById("app"), 700, 700, 3, 3);
+exports.game = game;
+window.addEventListener("mousedown", function (event) {
+  game.currentLevel.car.go();
+});
+},{"/public/car3.png":"public/car3.png","/public/car_backlights.png":"public/car_backlights.png","/public/lights.png":"public/lights.png","/public/carsound.mp3":"public/carsound.mp3","/public/honk.mp3":"public/honk.mp3","/public/j1.mp3":"public/j1.mp3","/public/j2.mp3":"public/j2.mp3","/public/j3.mp3":"public/j3.mp3","/public/j4.mp3":"public/j4.mp3","./robot":"src/robot.ts"}],"src/index.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var level_1 = require("./level");
+var level_1 = require("./level"); // Iets als game.level1, en vanaf dat punt verder 
 
-var game = new level_1.Game(400, 400, 3, 3);
-var level = game.makeLevel(0, document.getElementById("app"));
-var robot = level.robot;
-window.addEventListener("mousedown", function (event) {
-  robot.go();
-}); // Vanaf hier is de student aan de beurt
-// Meteen turn leidt tot een probleem!!
-// robot.blinkHeadlights(4)
 
-robot.forward();
-robot.backward();
-robot.turn();
-robot.turn();
-robot.forward();
-robot.forward();
-robot.turn(-1);
-robot.turn(-1);
-robot.forward();
-robot.forward();
-robot.turn(-1);
-robot.turn(-1);
-robot.forward();
-robot.forward();
-robot.turn();
-robot.backlights(true);
+var level1 = level_1.game.level1();
+var car = level1.car;
+car.speed = 1000;
+car.forward();
+car.forward(); // let level2 = game.level2();
+// let car = level2.car;
+// car.speed = 1000;
+// car.forward();
+// car.backward();
+// car.turn();
+// car.forward();
+// car.turn(-1);
+// car.turn(-1);
+// car.forward();
 },{"./level":"src/level.ts"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -2493,7 +2499,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52235" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49851" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

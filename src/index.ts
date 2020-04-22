@@ -1,36 +1,29 @@
-import { Game } from "./level";
-import * as anime from 'animejs';
+import {game} from './level';
+
+// Iets als game.level1, en vanaf dat punt verder 
+
+let level1 = game.level1 ();
+var car = level1.car;
+car.speed = 1000;
+
+car.forward();
+car.forward();
 
 
-let game = new Game(400, 400, 3, 3);
-let level = game.makeLevel(0, document.getElementById("app") as HTMLElement);
-let robot = level.robot;
-
-window.addEventListener("mousedown",function(event) {
-    robot.go();
-   });
-
-// Vanaf hier is de student aan de beurt
-
-// Meteen turn leidt tot een probleem!!
-// robot.blinkHeadlights(4)
-robot.forward();
-robot.backward();
-robot.turn();
-robot.turn();
-robot.forward();
-robot.forward();
-robot.turn (-1);
-robot.turn (-1);
-robot.forward();
-robot.forward();
-robot.turn (-1);
-robot.turn (-1);
 
 
-robot.forward();
-robot.forward();
-robot.turn();
-robot.backlights (true);
+// let level2 = game.level2();
+// let car = level2.car;
+// car.speed = 1000;
+
+// car.forward();
+// car.backward();
+
+// car.turn();
+// car.forward();
+// car.turn(-1);
+// car.turn(-1);
+
+// car.forward();
 
 

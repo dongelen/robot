@@ -4,7 +4,7 @@ import anime from "animejs/lib/anime.es.js";
 import {Goal } from "./level";
 import {Position} from "./level";
 
-let speed = 100;
+
 // let speed = 500;
 
 class Timemout {
@@ -17,8 +17,6 @@ class Timemout {
   timeout() {
       setTimeout(() => {
           this.robot.check();
-          
-          // this.timeout();
       }, this.time);
   } 
      
@@ -30,14 +28,17 @@ export class Robot {
     private widthCell: number;
     private heightCell: number;
   
-    private animationTimeLine: AnimationTimeline;
+    private animationTimeLine: any;
   
     public rotation: number = 0;
+    public  speed = 100;
+
     private isAnimationFinished = false;
   
     private goal: Goal;
-    private timeOut : Timemout;
+    private timeOut : Timemout |undefined   = undefined;
 
+    
     constructor(
       goal : Goal, 
       element: HTMLElement,
@@ -130,7 +131,7 @@ export class Robot {
       this.animationTimeLine.add ({
         targets: this.element,
         duration: 1,
-        begin: function(anim) {
+        begin: function(anim : any) {
           console.log ("Iets gedaan");
           console.log (robot);
         }
@@ -148,7 +149,7 @@ export class Robot {
         targets: this.element,
         translateX: this.widthCell * this.position.x,
         translateY: this.heightCell * this.position.y,
-        duration: speed,
+        duration: this.speed,
         easing: "easeInOutQuad"
       });
     }
@@ -163,7 +164,7 @@ export class Robot {
         targets: this.element,
         translateX: this.widthCell * this.position.x,
         translateY: this.heightCell * this.position.y,
-        duration: speed,
+        duration: this.speed,
         easing: "easeInOutQuad"
       });
     }
@@ -177,23 +178,23 @@ export class Robot {
       this.animationTimeLine.add({
         targets: this.element,
         rotate: this.rotation,
-        duration: speed,
+        duration: this.speed,
         ease: "easeInOutQuad"
       });
     }
   
   
   
-    findElement(name: string): HTMLElement {
-      for (let element of this.element.childNodes) {
+    findElement(name: string): HTMLElement | undefined {
+      for (const element of this.element.childNodes as any) {
         if (element.id === name) {
           return element;
         }
       }
     }
   
-    findElementIn(name: string, parentElement: HTMLElement): HTMLElement {
-      for (let element of parentElement.childNodes) {
+    findElementIn(name: string, parentElement: HTMLElement): HTMLElement| undefined {
+      for (const element of parentElement.childNodes as any) {
         if (element.id === name) {
           return element;
         }
@@ -213,8 +214,8 @@ export class Robot {
     }
   
     backlights (on : boolean) {
-      let car = this.findElement("car")
-      let carbacklight = this.findElementIn("carbacklight", car);
+      let car = this.findElement("car") as HTMLElement;
+      let carbacklight = this.findElementIn("carbacklight", car) as HTMLElement;
   
       this.animationTimeLine.add({
         targets: carbacklight,
@@ -248,12 +249,12 @@ export class Robot {
     }
   
     honk () {
-      let sound = document.getElementById ("honk");
+      let sound = document.getElementById ("honk") as HTMLAudioElement;
   
       this.animationTimeLine.add ({
         targets: this.element,
         duration: 500,
-        begin: function(anim) {
+        begin: function(anim : any) {
             sound.play();
         }
       });
@@ -261,7 +262,10 @@ export class Robot {
     }
 
     happy () {
-      let sound = document.getElementById ("oemp") as HTMLAudioElement;
+      let sounds = ["j1", "j2", "j3", "j4"];
+      let soundName = sounds[Math.floor(Math.random()*sounds.length)]
+
+      let sound = document.getElementById (soundName) as HTMLAudioElement;
       sound.play();
     }
 
@@ -276,27 +280,9 @@ export class Robot {
     }
 
 
-
-    endAnimation = (anim) => {
-      console.log ("%%%%%%%%%% End animation");
-      console.log (this.position.x + " " + this.position.y);
-      console.log (this);
-      this.goal.finishedAt(this, this.position);
-
-      if (this.goal.isSatified()) {
-        console.log ("Doel bereikt!!");
-        alert ("Gelukt!");
-      }
-      else {
-        alert ("Mislukt");
-      }
-    }
-  
-
     totalTime () : number {
       var total = 0;
       for (let child of this.animationTimeLine.children) {
-        console.log (child.duration);
         total = total + child.duration;
       }
       return total;
@@ -336,8 +322,9 @@ export class Robot {
       this.timeOut.timeout();
     }
     drawOnCanvas() {
+      let divElement = this.element as HTMLDivElement;
       let newLeft = this.position.x * 100;
       let newLeftString = newLeft.toString() + "px;";
-      this.element.style.left = newLeftString;
+      divElement.style.left = newLeftString;
     }
   }
