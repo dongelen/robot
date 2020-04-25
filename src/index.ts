@@ -1,7 +1,5 @@
 import {game} from './level';
 
-// Iets als game.level1, en vanaf dat punt verder 
-
 let level1 = game.level1 ();
 var car = level1.car;
 car.speed = 1000;

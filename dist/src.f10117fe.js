@@ -2131,7 +2131,8 @@ function () {
   };
 
   Robot.prototype.happy = function () {
-    var sounds = ["j1", "j2", "j3", "j4"];
+    // let sounds = ["j1", "j2", "j3", "j4"];
+    var sounds = ["j1"];
     var soundName = sounds[Math.floor(Math.random() * sounds.length)];
     var sound = document.getElementById(soundName);
     sound.play();
@@ -2146,7 +2147,15 @@ function () {
         easing: 'easeOutExpo'
       }, {
         value: 1,
-        duration: 900
+        duration: 500
+      }, {
+        value: 4,
+        duration: 100,
+        delay: 500,
+        easing: 'easeOutExpo'
+      }, {
+        value: 1,
+        duration: 500
       }]
     });
   };
@@ -2191,8 +2200,9 @@ function () {
     //   }
     // });
 
-    var sound = document.getElementById("carsound"); // sound.play();
-
+    var sound = document.getElementById("j1");
+    sound.play();
+    sound.pause();
     this.animationTimeLine.play();
     this.timeOut.timeout();
   };
@@ -2460,7 +2470,8 @@ function () {
     var carHeightPx = carHeight + "px";
     var widthPx = width + "px";
     var heightPx = height + "px";
-    var htmlCode = "\n  \n\n    <style> \n    #robot {\n      width: " + carWidthPx + ";\n      height: " + carHeightPx + ";\n      left: " + middle + ";\n      top: " + verticalCenter + ";\n      position: relative;\n  \n    }\n\n    #car {\n      position: relative;\n      background-image: url(" + car3_png_1.default + ");\n      background-size: " + carWidthPx + " " + carHeightPx + "; \n      width: " + carWidthPx + ";\n      height: " + carHeightPx + ";\n    }\n    #carbacklight {\n      left: 0;\n      top: 0;\n      position: absolute;\n      background-image: url(" + car_backlights_png_1.default + ");\n      background-size: " + carWidthPx + " " + carHeightPx + "; \n      width: " + carWidthPx + ";\n      height: " + carHeightPx + ";\n      opacity: 0;\n    }\n\n    #headlights {\n      width: " + carWidthPx + ";\n      height: " + carHeightPx + ";\n      left: " + centerHeadLights + ";\n      top: " + topHeadLights + ";\n      position: absolute;\n      opacity : 0;\n      background-image: url(" + lights_png_1.default + ");\n      background-size: " + carWidthPx + " " + carHeightPx + "; \n    }\n\n    #layer1 {\n      //display: none;\n      background-image: url(" + background_level1_png_1.default + ");\n      background-size: " + widthPx + " " + heightPx + ";\n    }\n    h1 {\n      color: white;\n    }\n\n    body {\n      background-color: black;\n    }\n    </style>\n    <audio id=\"carsound\">\n    <source src=\"" + carsound_mp3_1.default + "\"/>\n    </audio>\n\n    <audio id=\"honk\">\n    <source src=\"" + honk_mp3_1.default + "\"/>\n    </audio>\n    \n    <audio id=\"j1\">\n    <source src=\"" + j1_mp3_1.default + "\"/>\n    </audio>\n\n    <audio id=\"j2\">\n    <source src=\"" + j2_mp3_1.default + "\"/>\n    </audio>\n\n    <audio id=\"j3\">\n    <source src=\"" + j3_mp3_1.default + "\"/>\n    </audio>\n\n    <audio id=\"j4\">\n    <source src=\"" + j4_mp3_1.default + "\"/>\n    </audio>\n    <h1>Roadtrippin</h1>\n\n    <div style=\"position: relative;\">\n    \n     <canvas id=\"layer1\" width=\"" + width + "\" height=\"" + height + "\" \n       style=\"position: absolute; left: 0; top: 0; z-index: 0;\"></canvas>\n\n      <div id=\"robot\">  \n        <div id=\"headlights\"></div>\n\n        <div id=\"car\"> \n          <div id=\"carbacklight\"></div>\n\n        </div>\n      </div>\n     </div>\n     \n    ";
+    var backgroundImage = background_level1_png_1.default;
+    var htmlCode = "\n  \n\n    <style> \n    #robot {\n      width: " + carWidthPx + ";\n      height: " + carHeightPx + ";\n      left: " + middle + ";\n      top: " + verticalCenter + ";\n      position: relative;\n  \n    }\n\n    #car {\n      position: relative;\n      background-image: url(" + car3_png_1.default + ");\n      background-size: " + carWidthPx + " " + carHeightPx + "; \n      width: " + carWidthPx + ";\n      height: " + carHeightPx + ";\n    }\n    #carbacklight {\n      left: 0;\n      top: 0;\n      position: absolute;\n      background-image: url(" + car_backlights_png_1.default + ");\n      background-size: " + carWidthPx + " " + carHeightPx + "; \n      width: " + carWidthPx + ";\n      height: " + carHeightPx + ";\n      opacity: 0;\n    }\n\n    #headlights {\n      width: " + carWidthPx + ";\n      height: " + carHeightPx + ";\n      left: " + centerHeadLights + ";\n      top: " + topHeadLights + ";\n      position: absolute;\n      opacity : 0;\n      background-image: url(" + lights_png_1.default + ");\n      background-size: " + carWidthPx + " " + carHeightPx + "; \n    }\n\n    #layer1 {\n      //display: none;\n      background-image: url(" + backgroundImage + ");\n      background-size: " + widthPx + " " + heightPx + ";\n    }\n    h1 {\n      color: white;\n    }\n\n    body {\n      background-color: black;\n    }\n    </style>\n    <audio id=\"carsound\">\n    <source src=\"" + carsound_mp3_1.default + "\"/>\n    </audio>\n\n    <audio id=\"honk\">\n    <source src=\"" + honk_mp3_1.default + "\"/>\n    </audio>\n    \n    <audio id=\"j1\">\n    <source src=\"" + j1_mp3_1.default + "\"/>\n    </audio>\n\n    <audio id=\"j2\">\n    <source src=\"" + j2_mp3_1.default + "\"/>\n    </audio>\n\n    <audio id=\"j3\">\n    <source src=\"" + j3_mp3_1.default + "\"/>\n    </audio>\n\n    <audio id=\"j4\">\n    <source src=\"" + j4_mp3_1.default + "\"/>\n    </audio>\n    <h1>Roadtrippin</h1>\n\n    <div style=\"position: relative;\">\n    \n     <canvas id=\"layer1\" width=\"" + width + "\" height=\"" + height + "\" \n       style=\"position: absolute; left: 0; top: 0; z-index: 0;\"></canvas>\n\n      <div id=\"robot\">  \n        <div id=\"headlights\"></div>\n\n        <div id=\"car\"> \n          <div id=\"carbacklight\"></div>\n\n        </div>\n      </div>\n     </div>\n     \n    ";
     return htmlCode;
   };
 
@@ -2480,8 +2491,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var level_1 = require("./level"); // Iets als game.level1, en vanaf dat punt verder 
-
+var level_1 = require("./level");
 
 var level1 = level_1.game.level1();
 var car = level1.car;
@@ -2525,7 +2535,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57527" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49643" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

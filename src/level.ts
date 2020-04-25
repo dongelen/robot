@@ -4,6 +4,9 @@ import carBacklightImage from "/public/car_backlights.png";
 import headLightsImage from "/public/lights.png";
 
 import background_level1 from "/public/background_level1.png"
+import background_level2 from "/public/background_level2.png"
+
+
 
 import carSound from "/public/carsound.mp3";
 import honkSound from "/public/honk.mp3";
@@ -202,6 +205,9 @@ export class Game {
     
     let widthPx = width + "px";
     let heightPx = height + "px";
+
+    let backgroundImage = background_level1;
+
     let htmlCode = `
   
 
@@ -246,7 +252,7 @@ export class Game {
 
     #layer1 {
       //display: none;
-      background-image: url(${background_level1});
+      background-image: url(${backgroundImage});
       background-size: ${widthPx} ${heightPx};
     }
     h1 {

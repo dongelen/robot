@@ -262,7 +262,8 @@ export class Robot {
     }
 
     happy () {
-      let sounds = ["j1", "j2", "j3", "j4"];
+      // let sounds = ["j1", "j2", "j3", "j4"];
+      let sounds = ["j1"];
       let soundName = sounds[Math.floor(Math.random()*sounds.length)]
 
       let sound = document.getElementById (soundName) as HTMLAudioElement;
@@ -274,7 +275,9 @@ export class Robot {
         duration: 1500,
         scaleX: [
           { value: 4, duration: 100, delay: 500, easing: 'easeOutExpo' },
-          { value: 1, duration: 900 }
+          { value: 1, duration: 500 },
+          { value: 4, duration: 100, delay: 500, easing: 'easeOutExpo' },
+          { value: 1, duration: 500 }
         ]
         
       });
@@ -325,10 +328,10 @@ export class Robot {
       //   }
       // });
 
+      let sound = document.getElementById ("j1") as HTMLAudioElement;
+      sound.play();  
+      sound.pause();
 
-      let sound = document.getElementById ("carsound");
-      // sound.play();
-  
       this.animationTimeLine.play();
       this.timeOut.timeout();
     }
