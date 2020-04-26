@@ -1915,7 +1915,7 @@ function () {
 var Robot =
 /** @class */
 function () {
-  function Robot(goal, element, position, widthCell, heightCell) {
+  function Robot(level, goal, element, position, widthCell, heightCell) {
     this.rotation = 0;
     this.speed = 100;
     this.isAnimationFinished = false;
@@ -1925,6 +1925,7 @@ function () {
     this.widthCell = widthCell;
     this.heightCell = heightCell;
     this.goal = goal;
+    this.level = level;
     this.animationTimeLine = anime_es_js_1.default.timeline({
       autoplay: false
     });
@@ -2132,8 +2133,7 @@ function () {
 
   Robot.prototype.happy = function () {
     // let sounds = ["j1", "j2", "j3", "j4"];
-    var sounds = ["j1"];
-    var soundName = sounds[Math.floor(Math.random() * sounds.length)];
+    var soundName = this.level.endSound();
     var sound = document.getElementById(soundName);
     sound.play();
     anime_es_js_1.default({
@@ -2200,9 +2200,7 @@ function () {
     //   }
     // });
 
-    var sound = document.getElementById("j1");
-    sound.play();
-    sound.pause();
+    this.level.preloadSounds();
     this.animationTimeLine.play();
     this.timeOut.timeout();
   };
@@ -2373,6 +2371,7 @@ function () {
     this.fields = [];
     this.numberOColumns = 3;
     this.numberOfRows = 3;
+    this.audioEndID = "j1";
     this.canvas = canvases[0];
     this.fields = [new CellType()];
     this.numberOColumns = numberOfColumns;
@@ -2383,7 +2382,7 @@ function () {
     var rowHeight = height / this.numberOfRows;
     this.canvases = canvases;
     var robotElement = canvases[1];
-    this.car = new robot_1.Robot(goal, this.canvases[1], {
+    this.car = new robot_1.Robot(this, goal, this.canvases[1], {
       x: 0,
       y: 0
     }, columnWidth, rowHeight);
@@ -2414,10 +2413,55 @@ function () {
     this.car.drawOnCanvas();
   };
 
+  Level.prototype.preloadSounds = function () {
+    console.log("Prload");
+    var soundElements = [this.audioEndID, "honk"];
+
+    for (var _i = 0, soundElements_1 = soundElements; _i < soundElements_1.length; _i++) {
+      var element = soundElements_1[_i];
+      var sound = document.getElementById(element);
+      console.log(sound);
+      sound.play();
+      sound.pause();
+    }
+  };
+
+  Level.prototype.endSound = function () {
+    return this.audioEndID;
+  };
+
+  Level.prototype.setEndSound = function (url) {
+    var _a;
+
+    var audio = document.createElement("audio");
+    this.audioEndID = "new_end";
+    audio.id = this.audioEndID;
+    audio.src = url;
+    (_a = document.getElementById("app")) === null || _a === void 0 ? void 0 : _a.appendChild(audio);
+    console.dir(audio);
+  };
+
+  Level.prototype.setHonkSound = function (url) {
+    var audio = document.getElementById("honk");
+    audio.src = url;
+  };
+
   return Level;
 }();
 
 exports.Level = Level;
+
+var Level1 =
+/** @class */
+function (_super) {
+  __extends(Level1, _super);
+
+  function Level1() {
+    return _super !== null && _super.apply(this, arguments) || this;
+  }
+
+  return Level1;
+}(Level);
 
 var Game =
 /** @class */
@@ -2442,7 +2486,7 @@ function () {
     element.innerHTML = code;
     var level1 = document.getElementById("layer1");
     var robot = document.getElementById("robot");
-    var l = new Level(new GoalLevel1(), [level1, robot], 1, 3);
+    var l = new Level1(new GoalLevel1(), [level1, robot], 1, 3);
     l.draw();
     return l;
   };
@@ -2494,8 +2538,12 @@ Object.defineProperty(exports, "__esModule", {
 var level_1 = require("./level");
 
 var level1 = level_1.game.level1();
+level1.setHonkSound("http://soundbible.com/grab.php?id=669&type=mp3");
+level1.setEndSound("http://soundbible.com/grab.php?id=2214&type=mp3"); // Nu nog de auto customizen
+
 var car = level1.car;
 car.speed = 1000;
+car.honk();
 car.forward();
 car.forward(); // let level2 = game.level2();
 // let car = level2.car;
@@ -2535,7 +2583,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49643" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50934" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

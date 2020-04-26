@@ -76,6 +76,8 @@ export class Level {
   private numberOColumns = 3;
   private numberOfRows = 3;
 
+  private audioEndID : string  = "j1";
+
   constructor(
     goal: Goal,
     canvases: HTMLElement[],
@@ -94,7 +96,7 @@ export class Level {
 
     let robotElement = canvases[1];
 
-    this.car = new Car(goal, this.canvases[1], { x: 0, y: 0 }, columnWidth, rowHeight);
+    this.car = new Car(this, goal, this.canvases[1], { x: 0, y: 0 }, columnWidth, rowHeight);
   }
 
   draw(drawBones = false) {
@@ -121,7 +123,49 @@ export class Level {
 
     this.car.drawOnCanvas();
   }
+
+
+  preloadSounds () {
+    console.log ("Prload");
+  
+    let soundElements = [this.audioEndID, "honk"];
+
+    for (let element of soundElements) {
+      let sound = document.getElementById (element) as HTMLAudioElement;
+      console.log (sound);
+      sound.play();  
+      sound.pause();
+    }
+  }
+
+  endSound () : string {
+    return this.audioEndID;
+  }
+
+
+  setEndSound (url : string) {
+    let audio = document.createElement ("audio") as HTMLAudioElement;
+    this.audioEndID = "new_end";
+    audio.id = this.audioEndID;
+    audio.src = url;
+
+    document.getElementById ("app")?.appendChild (audio);
+    console.dir (audio);
+  }
+
+  setHonkSound (url : string) {
+    let audio = document.getElementById ("honk") as HTMLAudioElement;
+    audio.src = url;
+  }
+
+
 }
+
+class Level1 extends Level {
+
+
+}
+
 
 export class Game {
   private gameElement : HTMLElement;
@@ -154,7 +198,7 @@ export class Game {
     let level1 = document.getElementById("layer1") as HTMLCanvasElement;
     let robot = document.getElementById("robot") as HTMLCanvasElement;
     
-    let l = new Level(
+    let l = new Level1(
       new GoalLevel1(),
       [level1, robot],
       1,

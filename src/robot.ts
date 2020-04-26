@@ -1,7 +1,7 @@
 import anime from "animejs/lib/anime.es.js";
 // import * as anime from 'animejs';
 
-import {Goal } from "./level";
+import {Goal, Level } from "./level";
 import {Position} from "./level";
 
 
@@ -36,10 +36,12 @@ export class Robot {
     private isAnimationFinished = false;
   
     private goal: Goal;
+    private level : Level;
     private timeOut : Timemout |undefined   = undefined;
 
     
     constructor(
+      level: Level,
       goal : Goal, 
       element: HTMLElement,
       position: Position,
@@ -51,6 +53,7 @@ export class Robot {
       this.widthCell = widthCell;
       this.heightCell = heightCell;
       this.goal = goal;
+      this.level = level;
 
       this.animationTimeLine = anime.timeline({
         autoplay: false
@@ -263,8 +266,8 @@ export class Robot {
 
     happy () {
       // let sounds = ["j1", "j2", "j3", "j4"];
-      let sounds = ["j1"];
-      let soundName = sounds[Math.floor(Math.random()*sounds.length)]
+      
+      let soundName = this.level.endSound();
 
       let sound = document.getElementById (soundName) as HTMLAudioElement;
       sound.play();
@@ -328,10 +331,8 @@ export class Robot {
       //   }
       // });
 
-      let sound = document.getElementById ("j1") as HTMLAudioElement;
-      sound.play();  
-      sound.pause();
 
+      this.level.preloadSounds();
       this.animationTimeLine.play();
       this.timeOut.timeout();
     }
