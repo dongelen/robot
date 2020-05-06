@@ -1,10 +1,32 @@
 import {game} from './level';
 
-let level1 = game.level1 ();
+function repeatTimes (numberOfTimes: number, block: Function) {
+    for (var i= 0; i != numberOfTimes; i++) {
+        block();
+    }    
+}
 
-var car = level1.car;
-car.forward();
-car.forward();
+function repeatUntilWall (block: Function ) {
+    while (!car.seesWallInFront()) {
+        block();
+    }
+}
+
+let level4 = game.level5 ();
+var car = level4.car;
+
+repeatTimes(9, function (){
+    car.forward();
+})
+
+car.turn();
+car.turn();
+
+repeatTimes(5, function (){
+    car.forward();
+})
+
+
 
 /*
 Als je naar level2 wilt 

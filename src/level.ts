@@ -5,6 +5,9 @@ import headLightsImage from "/public/lights.png";
 
 import background_level1 from "/public/background_level1.png"
 import background_level2 from "/public/background_level2.png"
+import background_level3 from "/public/background_level3.png"
+import background_level4 from "/public/background_level4.png"
+import background_level5 from "/public/background_level5.png"
 
 
 
@@ -60,7 +63,15 @@ class GoalLevel2 extends Goal {
 class GoalLevel3 extends GoalLevel2 {
   finishedAt (robot: Car, endPosition: Position ) {
     super.finishedAt(robot, endPosition);
-    this.isGoalMet = robot.rotation === 315;
+    console.log (robot.rotation);
+    this.isGoalMet = robot.rotation === 225;
+  }
+}
+
+class GoalLevel4 extends Goal{
+  finishedAt (robot: Car, endPosition: Position ) {
+    console.log (endPosition);
+    this.isGoalMet = endPosition.x == 9 && endPosition.y == 5;
   }
 }
 
@@ -82,9 +93,7 @@ export class Level {
   private numberOColumns = 3;
   private numberOfRows = 3;
 
-  private audioEndID : string  = "j1";
-
-
+  protected audioEndID : string  = "j1";
 
   constructor(
     goal: Goal,
@@ -104,6 +113,15 @@ export class Level {
     let robotElement = canvases[1];
 
     this.car = new Car(this, goal, this.canvases[1], { x: 0, y: 0 }, columnWidth, rowHeight);
+    this.afterInit();
+
+  }
+
+  /*
+  Gets called after the constructor
+  */
+  protected afterInit () {
+
   }
 
   draw(drawBones = false) {
@@ -191,11 +209,26 @@ export class Level {
 
 class Level1 extends Level {
 
+}
+
+class Level2 extends Level {
+  afterInit () {
+    this.audioEndID = "j2";
+  }
 
 }
 
+class Level3 extends Level {
+  afterInit () {
+    this.audioEndID = "j3";
+  }
+}
 
-
+class Level4 extends Level {
+  afterInit () {
+    this.audioEndID = "j4";
+  }
+}
 
 export class Game {
   private gameElement : HTMLElement;
@@ -210,18 +243,34 @@ export class Game {
 
 
   level1 () : Level {
-    this.currentLevel = this.makeLevel0 (this.gameElement);
-    return this.currentLevel;
-  }
-
-  level2 () : Level {
     this.currentLevel = this.makeLevel1 (this.gameElement);
     return this.currentLevel;
   }
 
+  level2 () : Level {
+    this.currentLevel = this.makeLevel2 (this.gameElement);
+    return this.currentLevel;
+  }
+
+  level3 () : Level {
+    this.currentLevel = this.makeLevel3 (this.gameElement);
+    return this.currentLevel;
+  }
+
+  level4 () : Level {
+    this.currentLevel = this.makeLevel4 (this.gameElement);
+    return this.currentLevel;
+  }
+
+  level5() : Level {
+    this.currentLevel = this.makeLevel5 (this.gameElement);
+    return this.currentLevel;
+  }
+
+
   // Generates test level
   levelTest (): Level {
-    this.currentLevel = this.makeLevel0 (this.gameElement);
+    this.currentLevel = this.makeLevel1 (this.gameElement);
     this.currentLevel.addWalls();
 
     return this.currentLevel;
@@ -229,8 +278,8 @@ export class Game {
   }
 
 
-  private makeLevel0 (element: HTMLElement) {
-    let code = this.createHTMLContainer(700, 200, 1, 3);
+  private makeLevel1 (element: HTMLElement) {
+    let code = this.createHTMLContainer(background_level1, 700, 200, 1, 3);
     element.innerHTML = code;
 
     let level1 = document.getElementById("layer1") as HTMLCanvasElement;
@@ -248,22 +297,88 @@ export class Game {
     return l;
   }
 
-  private makeLevel1 (element: HTMLElement) {
+  private makeLevel2 (element: HTMLElement) {
     let nr = 2;
     let nc = 3
-    let code = this.createHTMLContainer(700, 400, nr, nc);
+    let code = this.createHTMLContainer(background_level2, 700, 400, nr, nc);
     element.innerHTML = code;
 
     let level1 = document.getElementById("layer1") as HTMLCanvasElement;
     let robot = document.getElementById("robot") as HTMLCanvasElement;
     
-    let l = new Level(
+    let l = new Level2(
       new GoalLevel2(),
       [level1, robot],
       nr,
       nc
     );
+    
+    l.draw();
 
+    return l;
+  }
+
+
+  private makeLevel3 (element : HTMLElement) {
+    let nr = 2;
+    let nc = 3
+    let code = this.createHTMLContainer(background_level3, 700, 400, nr, nc);
+    element.innerHTML = code;
+
+    let level1 = document.getElementById("layer1") as HTMLCanvasElement;
+    let robot = document.getElementById("robot") as HTMLCanvasElement;
+    
+    let l = new Level3(
+      new GoalLevel3(),
+      [level1, robot],
+      nr,
+      nc
+    );
+    
+    l.draw();
+
+    return l;
+
+  }
+
+  private makeLevel4 (element : HTMLElement) {
+    let nr = 8;
+    let nc = 14;
+    let code = this.createHTMLContainer(background_level4, 700, 400, nr, nc);
+    element.innerHTML = code;
+
+    let level1 = document.getElementById("layer1") as HTMLCanvasElement;
+    let robot = document.getElementById("robot") as HTMLCanvasElement;
+    
+    let l = new Level4(
+      new GoalLevel4(),
+      [level1, robot],
+      nr,
+      nc
+    );
+    
+    l.draw();
+
+    return l;
+
+  }
+
+  private makeLevel5 (element : HTMLElement) {
+    let nr = 8;
+    let nc = 14;
+    let code = this.createHTMLContainer(background_level5, 700, 400, nr, nc);
+    element.innerHTML = code;
+
+    let level1 = document.getElementById("layer1") as HTMLCanvasElement;
+    let robot = document.getElementById("robot") as HTMLCanvasElement;
+    
+    let l = new Level4(
+      new GoalLevel4(),
+      [level1, robot],
+      nr,
+      nc
+    );
+    
     l.draw();
 
     return l;
@@ -271,7 +386,7 @@ export class Game {
   }
 
 
-  createHTMLContainer(width: number, height: number, numberOfRows : number, numberOfColumns : number): string {
+  createHTMLContainer(levelBackgroundImage: string, width: number, height: number, numberOfRows : number, numberOfColumns : number): string {
     let carWidth = width / 2 / numberOfColumns;
     let carHeight = carWidth / 2;
 
@@ -288,7 +403,7 @@ export class Game {
     let widthPx = width + "px";
     let heightPx = height + "px";
 
-    let backgroundImage = background_level1;
+    let backgroundImage = levelBackgroundImage;
 
     let htmlCode = `
   
