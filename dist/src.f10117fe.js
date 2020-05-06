@@ -2131,6 +2131,15 @@ function () {
     });
   };
 
+  Robot.prototype.seesWallInFront = function () {
+    var x = this.position.x + this.calculateForwardXMovement();
+    var y = this.position.y + this.calculateForwardYMovement();
+    return this.level.wallAtLocation({
+      x: x,
+      y: y
+    });
+  };
+
   Robot.prototype.happy = function () {
     // let sounds = ["j1", "j2", "j3", "j4"];
     var soundName = this.level.endSound();
@@ -2354,15 +2363,14 @@ function (_super) {
   return GoalLevel3;
 }(GoalLevel2);
 
-var CellType =
-/** @class */
-function () {
-  function CellType() {}
+var CellType;
 
-  return CellType;
-}();
+(function (CellType) {
+  CellType[CellType["Normal"] = 0] = "Normal";
+  CellType[CellType["Wall"] = 1] = "Wall";
+})(CellType || (CellType = {})); // export class CellType {
+// }
 
-exports.CellType = CellType;
 
 var Level =
 /** @class */
@@ -2373,7 +2381,6 @@ function () {
     this.numberOfRows = 3;
     this.audioEndID = "j1";
     this.canvas = canvases[0];
-    this.fields = [new CellType()];
     this.numberOColumns = numberOfColumns;
     this.numberOfRows = numberOfRows;
     var width = this.canvas.width;
@@ -2411,6 +2418,22 @@ function () {
     }
 
     this.car.drawOnCanvas();
+  }; // Voor nu test code
+
+
+  Level.prototype.addWalls = function () {
+    for (var row = 0; row != this.numberOfRows; row++) {
+      var newRow = [];
+
+      for (var column = 0; column != this.numberOColumns; column++) {
+        newRow.push(CellType.Normal);
+      }
+
+      this.fields.push(newRow);
+    }
+
+    this.fields[0][1] = CellType.Wall;
+    console.dir(this.fields);
   };
 
   Level.prototype.preloadSounds = function () {
@@ -2430,6 +2453,13 @@ function () {
     return this.audioEndID;
   };
 
+  Level.prototype.wallAtLocation = function (position) {
+    console.log("Checking pos");
+    console.log(position);
+    return this.fields[position.y][position.x] === CellType.Wall;
+    ;
+  };
+
   Level.prototype.setEndSound = function (url) {
     var _a;
 
@@ -2438,7 +2468,6 @@ function () {
     audio.id = this.audioEndID;
     audio.src = url;
     (_a = document.getElementById("app")) === null || _a === void 0 ? void 0 : _a.appendChild(audio);
-    console.dir(audio);
   };
 
   Level.prototype.setHonkSound = function (url) {
@@ -2478,6 +2507,13 @@ function () {
 
   Game.prototype.level2 = function () {
     this.currentLevel = this.makeLevel1(this.gameElement);
+    return this.currentLevel;
+  }; // Generates test level
+
+
+  Game.prototype.levelTest = function () {
+    this.currentLevel = this.makeLevel0(this.gameElement);
+    this.currentLevel.addWalls();
     return this.currentLevel;
   };
 
@@ -2537,15 +2573,22 @@ Object.defineProperty(exports, "__esModule", {
 
 var level_1 = require("./level");
 
-var level1 = level_1.game.level1();
-level1.setHonkSound("http://soundbible.com/grab.php?id=669&type=mp3");
-level1.setEndSound("http://soundbible.com/grab.php?id=2214&type=mp3"); // Nu nog de auto customizen
+var level1 = level_1.game.level2(); // level1.setHonkSound ("http://soundbible.com/grab.php?id=2218&type=mp3");
+// level1.setEndSound("http://soundbible.com/grab.php?id=2210&type=mp3");
+// Nu nog de auto customizen
+// En het eind dansje
 
 var car = level1.car;
-car.speed = 1000;
+console.log(car.position);
+
+if (car.seesWallInFront()) {
+  car.blinkHeadlights(3);
+}
+
+car.speed = 100;
 car.honk();
-car.forward();
-car.forward(); // let level2 = game.level2();
+car.forward(); // Level met onzichtbare muren. 
+// let level2 = game.level2();
 // let car = level2.car;
 // car.speed = 1000;
 // car.forward();
@@ -2583,7 +2626,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50934" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63580" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

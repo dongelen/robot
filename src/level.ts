@@ -65,10 +65,16 @@ class GoalLevel3 extends GoalLevel2 {
 }
 
 
-export class CellType {}
+enum CellType {
+  Normal, Wall
+}
+
+// export class CellType {
+
+// }
 
 export class Level {
-  public fields: CellType[] = [];
+  public fields: CellType[][] = [];
   private canvases: HTMLElement[];
   private canvas: HTMLCanvasElement;
   readonly car: Car;
@@ -78,6 +84,8 @@ export class Level {
 
   private audioEndID : string  = "j1";
 
+
+
   constructor(
     goal: Goal,
     canvases: HTMLElement[],
@@ -85,7 +93,6 @@ export class Level {
     numberOfColumns: number
   ) {
     this.canvas = canvases[0] as HTMLCanvasElement;
-    this.fields = [new CellType()];
     this.numberOColumns = numberOfColumns;
     this.numberOfRows = numberOfRows;
     let width = this.canvas.width;
@@ -123,7 +130,19 @@ export class Level {
 
     this.car.drawOnCanvas();
   }
+  // Voor nu test code
+  addWalls() {
 
+    for (let row = 0; row != this.numberOfRows; row ++) {
+      var newRow : CellType[] = [] 
+      for (let column =0; column != this.numberOColumns; column++) {
+        newRow.push (CellType.Normal);
+      }
+      this.fields.push (newRow);  
+    } 
+    this.fields[0][1] = CellType.Wall;
+    console.dir(this.fields);
+  }
 
   preloadSounds () {
     console.log ("Prload");
@@ -143,6 +162,12 @@ export class Level {
   }
 
 
+  wallAtLocation (position : Position) : boolean {
+    console.log ("Checking pos");
+    console.log (position);
+    return this.fields[position.y][position.x] === CellType.Wall;;
+  }
+
   setEndSound (url : string) {
     let audio = document.createElement ("audio") as HTMLAudioElement;
     this.audioEndID = "new_end";
@@ -150,7 +175,6 @@ export class Level {
     audio.src = url;
 
     document.getElementById ("app")?.appendChild (audio);
-    console.dir (audio);
   }
 
   setHonkSound (url : string) {
@@ -165,6 +189,8 @@ class Level1 extends Level {
 
 
 }
+
+
 
 
 export class Game {
@@ -189,6 +215,14 @@ export class Game {
     return this.currentLevel;
   }
 
+  // Generates test level
+  levelTest (): Level {
+    this.currentLevel = this.makeLevel0 (this.gameElement);
+    this.currentLevel.addWalls();
+
+    return this.currentLevel;
+
+  }
 
 
   private makeLevel0 (element: HTMLElement) {

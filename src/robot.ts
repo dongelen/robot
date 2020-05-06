@@ -264,6 +264,14 @@ export class Robot {
 
     }
 
+    seesWallInFront () : boolean {
+      let x = this.position.x + this.calculateForwardXMovement();
+      let y = this.position.y + this.calculateForwardYMovement();
+
+      
+      return this.level.wallAtLocation({x: x, y: y});
+    }
+
     happy () {
       // let sounds = ["j1", "j2", "j3", "j4"];
       
