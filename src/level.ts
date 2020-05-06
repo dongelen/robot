@@ -182,6 +182,10 @@ export class Level {
     audio.src = url;
   }
 
+  setRobotBackground (url : string) {
+    let car = document.getElementById ("car") as HTMLDivElement;
+    car.setAttribute("style", "background-image:url('"+url+"');");    
+  }
 
 }
 
