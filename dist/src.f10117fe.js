@@ -1958,6 +1958,10 @@ function () {
   };
 
   Robot.prototype.calculateForwardYMovement = function () {
+    if (this.rotation >= 360) {
+      this.rotation = this.rotation - 360;
+    }
+
     if (this.rotation < 0) {
       this.rotation = 360 + this.rotation;
     }
@@ -2018,6 +2022,15 @@ function () {
   };
 
   Robot.prototype.forward = function () {
+    if (this.seesWallInFront()) {
+      console.log("I see wall"); // Zorg voor een verkeerde richting
+
+      console.log(this.position);
+      this.turn();
+      this.spin(180);
+      return;
+    }
+
     var oldPosition = this.position;
     this.position.x = this.position.x + this.calculateForwardXMovement();
     this.position.y = this.position.y + this.calculateForwardYMovement();
@@ -2139,10 +2152,25 @@ function () {
     });
   };
 
-  Robot.prototype.seesWallInFront = function () {
+  Robot.prototype.seesWallInFront = function (debug) {
+    if (debug === void 0) {
+      debug = false;
+    }
+
     var x = this.position.x + this.calculateForwardXMovement();
     var y = this.position.y + this.calculateForwardYMovement();
-    return this.level.wallAtLocation({
+
+    if (debug) {
+      console.log("794qyr7yrehsdfighsiguhisdfghu");
+      console.dir(this.position);
+      console.dir({
+        x: x,
+        y: y
+      });
+      console.log(this.rotation);
+    }
+
+    return this.level.wallWhileMoving(this.position, {
       x: x,
       y: y
     });
@@ -2390,18 +2418,37 @@ function (_super) {
   }
 
   GoalLevel4.prototype.finishedAt = function (robot, endPosition) {
-    console.log(endPosition);
     this.isGoalMet = endPosition.x == 9 && endPosition.y == 5;
   };
 
   return GoalLevel4;
 }(Goal);
 
+var GoalLevel5 =
+/** @class */
+function (_super) {
+  __extends(GoalLevel5, _super);
+
+  function GoalLevel5() {
+    return _super !== null && _super.apply(this, arguments) || this;
+  }
+
+  GoalLevel5.prototype.finishedAt = function (robot, endPosition) {
+    console.log(endPosition);
+    this.isGoalMet = endPosition.x == 9 && endPosition.y == 3;
+  };
+
+  return GoalLevel5;
+}(Goal);
+
 var CellType;
 
 (function (CellType) {
   CellType[CellType["Normal"] = 0] = "Normal";
-  CellType[CellType["Wall"] = 1] = "Wall";
+  CellType[CellType["WallLeft"] = 1] = "WallLeft";
+  CellType[CellType["WallTop"] = 2] = "WallTop";
+  CellType[CellType["WallRight"] = 3] = "WallRight";
+  CellType[CellType["WallBottom"] = 4] = "WallBottom";
 })(CellType || (CellType = {})); // export class CellType {
 // }
 
@@ -2427,6 +2474,17 @@ function () {
       x: 0,
       y: 0
     }, columnWidth, rowHeight);
+
+    for (var row = 0; row != this.numberOfRows; row++) {
+      var newRow = [];
+
+      for (var column = 0; column != this.numberOColumns; column++) {
+        newRow.push(CellType.Normal);
+      }
+
+      this.fields.push(newRow);
+    }
+
     this.afterInit();
   }
   /*
@@ -2459,32 +2517,14 @@ function () {
     }
 
     this.car.drawOnCanvas();
-  }; // Voor nu test code
-
-
-  Level.prototype.addWalls = function () {
-    for (var row = 0; row != this.numberOfRows; row++) {
-      var newRow = [];
-
-      for (var column = 0; column != this.numberOColumns; column++) {
-        newRow.push(CellType.Normal);
-      }
-
-      this.fields.push(newRow);
-    }
-
-    this.fields[0][1] = CellType.Wall;
-    console.dir(this.fields);
   };
 
   Level.prototype.preloadSounds = function () {
-    console.log("Prload");
     var soundElements = [this.audioEndID, "honk"];
 
     for (var _i = 0, soundElements_1 = soundElements; _i < soundElements_1.length; _i++) {
       var element = soundElements_1[_i];
       var sound = document.getElementById(element);
-      console.log(sound);
       sound.play();
       sound.pause();
     }
@@ -2494,11 +2534,48 @@ function () {
     return this.audioEndID;
   };
 
-  Level.prototype.wallAtLocation = function (position) {
-    console.log("Checking pos");
-    console.log(position);
-    return this.fields[position.y][position.x] === CellType.Wall;
-    ;
+  Level.prototype.wallWhileMoving = function (from, to) {
+    /*
+    Wall als:
+    - Nieuwe positie buiten veld
+    - Horizontale beweging:
+    - Diagonaal: vier posities checken
+    - Verticaal
+    */
+    // Er is een muur als to buiten het veld ligt
+    var outsideField = to.x >= this.numberOColumns || to.x < 0 || to.y >= this.numberOfRows || to.y < 0;
+
+    if (outsideField) {
+      return true;
+    } // Check  op horizontale move
+
+
+    if (from.y == to.y) {
+      if (from.x < to.x) {
+        // naar rechts
+        console.log("----1");
+        var wall = this.fields[to.y][from.x] === CellType.WallRight || this.fields[to.y][to.x] === CellType.WallLeft;
+        return wall;
+      } else {
+        // naar links
+        console.log("----2");
+        return this.fields[to.y][to.x] === CellType.WallLeft || this.fields[to.y][to.x] === CellType.WallRight;
+      }
+    } // Check op verticale move
+
+
+    if (from.x == to.x) {
+      if (from.y < to.y) {
+        console.log("----3");
+        return this.fields[from.y][to.x] === CellType.WallBottom || this.fields[to.y][to.x] === CellType.WallTop;
+      } else {
+        // omhoog
+        console.log("----4");
+        return this.fields[from.y][to.x] === CellType.WallTop || this.fields[to.y][to.x] === CellType.WallBottom;
+      }
+    }
+
+    return false;
   };
 
   Level.prototype.setEndSound = function (url) {
@@ -2584,6 +2661,47 @@ function (_super) {
   };
 
   return Level4;
+}(Level);
+
+var Level5 =
+/** @class */
+function (_super) {
+  __extends(Level5, _super);
+
+  function Level5() {
+    return _super !== null && _super.apply(this, arguments) || this;
+  }
+
+  Level5.prototype.afterInit = function () {
+    this.makeWallY(13, 0, 8, CellType.WallLeft);
+    this.makeWallY(0, 2, 8, CellType.WallRight);
+    this.makeWallX(5, 1, 9, CellType.WallBottom);
+    this.makeWallY(11, 1, 7, CellType.WallLeft);
+    this.makeWallX(1, 1, 11, CellType.WallBottom);
+    this.makeWallX(2, 3, 10, CellType.WallBottom); // Inner
+
+    this.makeWallY(3, 4, 6, CellType.WallRight);
+    this.makeWallY(4, 3, 5, CellType.WallRight);
+    this.makeWallY(5, 4, 6, CellType.WallRight);
+    this.makeWallY(6, 3, 5, CellType.WallRight);
+    this.makeWallY(7, 4, 6, CellType.WallRight);
+    this.makeWallY(8, 3, 5, CellType.WallRight);
+    this.makeWallY(9, 3, 6, CellType.WallRight);
+  };
+
+  Level5.prototype.makeWallY = function (x, by, ey, wallType) {
+    for (var y = by; y != ey; y++) {
+      this.fields[y][x] = wallType;
+    }
+  };
+
+  Level5.prototype.makeWallX = function (y, bx, ex, wallType) {
+    for (var x = bx; x != ex; x++) {
+      this.fields[y][x] = wallType;
+    }
+  };
+
+  return Level5;
 }(Level);
 
 var Game =
@@ -2679,7 +2797,7 @@ function () {
     element.innerHTML = code;
     var level1 = document.getElementById("layer1");
     var robot = document.getElementById("robot");
-    var l = new Level4(new GoalLevel4(), [level1, robot], nr, nc);
+    var l = new Level5(new GoalLevel5(), [level1, robot], nr, nc);
     l.draw();
     return l;
   };
@@ -2732,14 +2850,11 @@ function repeatUntilWall(block) {
 
 var level4 = level_1.game.level5();
 var car = level4.car;
-repeatTimes(9, function () {
-  car.forward();
-});
 car.turn();
-car.turn();
-repeatTimes(5, function () {
-  car.forward();
-});
+car.forward(); // Nu: 
+// Uitleg repeat + walls toevoegen aan de robot, als hij een wall ziet gaat hij er niet doorheen
+// En repeatuntilwall proberen
+
 /*
 Als je naar level2 wilt
 
@@ -2785,7 +2900,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "59444" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55860" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

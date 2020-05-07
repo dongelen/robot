@@ -82,6 +82,9 @@ export class Robot {
   
   
     private calculateForwardYMovement(): number {
+      if (this.rotation >= 360) {
+        this.rotation = this.rotation - 360;
+      }
       if (this.rotation < 0) {
         this.rotation = 360 + this.rotation;
       }
@@ -142,6 +145,16 @@ export class Robot {
     }
   
     forward() {
+      if (this.seesWallInFront()) {
+        console.log ("I see wall")
+        // Zorg voor een verkeerde richting
+
+        console.log (this.position);
+        this.turn();
+        this.spin(180);
+        return
+      }
+
       let oldPosition = this.position;
       this.position.x = this.position.x + this.calculateForwardXMovement();
       this.position.y = this.position.y + this.calculateForwardYMovement();
@@ -264,12 +277,18 @@ export class Robot {
 
     }
 
-    seesWallInFront () : boolean {
+    seesWallInFront (debug :boolean = false) : boolean {
       let x = this.position.x + this.calculateForwardXMovement();
       let y = this.position.y + this.calculateForwardYMovement();
 
+      if (debug) {
+        console.log ("794qyr7yrehsdfighsiguhisdfghu")
+        console.dir (this.position);
+        console.dir ({x: x, y: y})
+        console.log (this.rotation);
+      }
       
-      return this.level.wallAtLocation({x: x, y: y});
+      return this.level.wallWhileMoving(this.position, {x: x, y: y});
     }
 
     happy () {

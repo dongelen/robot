@@ -70,14 +70,21 @@ class GoalLevel3 extends GoalLevel2 {
 
 class GoalLevel4 extends Goal{
   finishedAt (robot: Car, endPosition: Position ) {
-    console.log (endPosition);
     this.isGoalMet = endPosition.x == 9 && endPosition.y == 5;
   }
 }
 
+class GoalLevel5 extends Goal {
+  finishedAt (robot: Car, endPosition: Position ) {
+    console.log (endPosition);
+    this.isGoalMet = endPosition.x == 9 && endPosition.y == 3;
+  }
+
+}
+
 
 enum CellType {
-  Normal, Wall
+  Normal, WallLeft, WallTop, WallRight, WallBottom
 }
 
 // export class CellType {
@@ -113,6 +120,15 @@ export class Level {
     let robotElement = canvases[1];
 
     this.car = new Car(this, goal, this.canvases[1], { x: 0, y: 0 }, columnWidth, rowHeight);
+
+    for (let row = 0; row != this.numberOfRows; row ++) {
+      var newRow : CellType[] = [] 
+      for (let column =0; column != this.numberOColumns; column++) {
+        newRow.push (CellType.Normal);
+      }
+      this.fields.push (newRow);  
+    } 
+
     this.afterInit();
 
   }
@@ -148,28 +164,13 @@ export class Level {
 
     this.car.drawOnCanvas();
   }
-  // Voor nu test code
-  addWalls() {
 
-    for (let row = 0; row != this.numberOfRows; row ++) {
-      var newRow : CellType[] = [] 
-      for (let column =0; column != this.numberOColumns; column++) {
-        newRow.push (CellType.Normal);
-      }
-      this.fields.push (newRow);  
-    } 
-    this.fields[0][1] = CellType.Wall;
-    console.dir(this.fields);
-  }
 
   preloadSounds () {
-    console.log ("Prload");
-  
     let soundElements = [this.audioEndID, "honk"];
 
     for (let element of soundElements) {
       let sound = document.getElementById (element) as HTMLAudioElement;
-      console.log (sound);
       sound.play();  
       sound.pause();
     }
@@ -180,10 +181,55 @@ export class Level {
   }
 
 
-  wallAtLocation (position : Position) : boolean {
-    console.log ("Checking pos");
-    console.log (position);
-    return this.fields[position.y][position.x] === CellType.Wall;;
+  wallWhileMoving (from: Position, to : Position) : boolean {
+    /* 
+    Wall als: 
+    - Nieuwe positie buiten veld
+    - Horizontale beweging: 
+    - Diagonaal: vier posities checken
+    - Verticaal 
+    */
+
+    
+    // Er is een muur als to buiten het veld ligt
+
+    let outsideField = to.x >= this.numberOColumns || to.x < 0 || to.y >= this.numberOfRows || to.y < 0
+    if (outsideField) {
+      return true;
+    }
+
+    // Check  op horizontale move
+    if (from.y == to.y) {
+      if (from.x < to.x) { // naar rechts
+        console.log ("----1")
+        let wall = this.fields[to.y][from.x] === CellType.WallRight || this.fields[to.y][to.x] === CellType.WallLeft;
+        
+        
+        return wall;
+      }
+      else { // naar links
+        console.log ("----2")
+
+        return this.fields[to.y][to.x] === CellType.WallLeft || this.fields[to.y][to.x] === CellType.WallRight;
+      }
+    }
+    
+    // Check op verticale move
+    if (from.x == to.x) {
+      if (from.y < to.y) {
+        console.log ("----3")
+
+        return this.fields[from.y][to.x] === CellType.WallBottom || this.fields[to.y][to.x] === CellType.WallTop;
+      }
+      else { // omhoog
+        console.log ("----4")
+
+        return this.fields[from.y][to.x] === CellType.WallTop || this.fields[to.y][to.x] === CellType.WallBottom;
+      }
+    }
+
+
+    return false;
   }
 
   setEndSound (url : string) {
@@ -227,6 +273,45 @@ class Level3 extends Level {
 class Level4 extends Level {
   afterInit () {
     this.audioEndID = "j4";
+  }
+}
+
+class Level5 extends Level {
+  afterInit() {
+    this.makeWallY (13, 0, 8, CellType.WallLeft);
+    this.makeWallY (0, 2, 8, CellType.WallRight);
+    
+    this.makeWallX (5, 1, 9, CellType.WallBottom);
+    this.makeWallY (11, 1, 7, CellType.WallLeft);
+
+    this.makeWallX (1, 1, 11, CellType.WallBottom);
+
+    this.makeWallX (2, 3, 10, CellType.WallBottom);
+
+
+    // Inner
+    this.makeWallY(3, 4, 6, CellType.WallRight);    
+    this.makeWallY(4, 3, 5, CellType.WallRight);
+    this.makeWallY(5, 4, 6, CellType.WallRight);
+    this.makeWallY(6, 3, 5, CellType.WallRight);
+    this.makeWallY(7, 4, 6, CellType.WallRight);
+    this.makeWallY(8, 3, 5, CellType.WallRight);
+
+    this.makeWallY(9, 3, 6, CellType.WallRight);
+  }
+
+  makeWallY (x : number , by: number, ey: number, wallType: CellType) {
+    for (var y = by; y != ey; y++) {
+      this.fields[y][x] = wallType;
+    }
+
+  }
+
+  makeWallX (y: number, bx: number, ex: number, wallType: CellType) {
+    for (var x = bx; x != ex; x++) {
+      this.fields[y][x] = wallType;
+    }
+
   }
 }
 
@@ -372,8 +457,8 @@ export class Game {
     let level1 = document.getElementById("layer1") as HTMLCanvasElement;
     let robot = document.getElementById("robot") as HTMLCanvasElement;
     
-    let l = new Level4(
-      new GoalLevel4(),
+    let l = new Level5(
+      new GoalLevel5(),
       [level1, robot],
       nr,
       nc

@@ -15,16 +15,12 @@ function repeatUntilWall (block: Function ) {
 let level4 = game.level5 ();
 var car = level4.car;
 
-repeatTimes(9, function (){
-    car.forward();
-})
+car.turn ();
+car.forward();
 
-car.turn();
-car.turn();
-
-repeatTimes(5, function (){
-    car.forward();
-})
+// Nu: 
+// Uitleg repeat + walls toevoegen aan de robot, als hij een wall ziet gaat hij er niet doorheen
+// En repeatuntilwall proberen
 
 
 
