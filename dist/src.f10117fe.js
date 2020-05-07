@@ -2553,12 +2553,10 @@ function () {
     if (from.y == to.y) {
       if (from.x < to.x) {
         // naar rechts
-        console.log("----1");
         var wall = this.fields[to.y][from.x] === CellType.WallRight || this.fields[to.y][to.x] === CellType.WallLeft;
         return wall;
       } else {
         // naar links
-        console.log("----2");
         return this.fields[to.y][to.x] === CellType.WallLeft || this.fields[to.y][to.x] === CellType.WallRight;
       }
     } // Check op verticale move
@@ -2566,14 +2564,13 @@ function () {
 
     if (from.x == to.x) {
       if (from.y < to.y) {
-        console.log("----3");
         return this.fields[from.y][to.x] === CellType.WallBottom || this.fields[to.y][to.x] === CellType.WallTop;
       } else {
         // omhoog
-        console.log("----4");
         return this.fields[from.y][to.x] === CellType.WallTop || this.fields[to.y][to.x] === CellType.WallBottom;
       }
-    }
+    } // Check op diagonaal rijden
+
 
     return false;
   };
@@ -2827,7 +2824,29 @@ exports.game = game;
 window.addEventListener("mousedown", function (event) {
   game.currentLevel.car.go();
 });
-},{"/public/car3.png":"public/car3.png","/public/car_backlights.png":"public/car_backlights.png","/public/lights.png":"public/lights.png","/public/background_level1.png":"public/background_level1.png","/public/background_level2.png":"public/background_level2.png","/public/background_level3.png":"public/background_level3.png","/public/background_level4.png":"public/background_level4.png","/public/background_level5.png":"public/background_level5.png","/public/carsound.mp3":"public/carsound.mp3","/public/honk.mp3":"public/honk.mp3","/public/j1.mp3":"public/j1.mp3","/public/j2.mp3":"public/j2.mp3","/public/j3.mp3":"public/j3.mp3","/public/j4.mp3":"public/j4.mp3","./robot":"src/robot.ts"}],"src/index.ts":[function(require,module,exports) {
+},{"/public/car3.png":"public/car3.png","/public/car_backlights.png":"public/car_backlights.png","/public/lights.png":"public/lights.png","/public/background_level1.png":"public/background_level1.png","/public/background_level2.png":"public/background_level2.png","/public/background_level3.png":"public/background_level3.png","/public/background_level4.png":"public/background_level4.png","/public/background_level5.png":"public/background_level5.png","/public/carsound.mp3":"public/carsound.mp3","/public/honk.mp3":"public/honk.mp3","/public/j1.mp3":"public/j1.mp3","/public/j2.mp3":"public/j2.mp3","/public/j3.mp3":"public/j3.mp3","/public/j4.mp3":"public/j4.mp3","./robot":"src/robot.ts"}],"src/repeaters.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+function repeatTimes(numberOfTimes, block) {
+  for (var i = 0; i != numberOfTimes; i++) {
+    block();
+  }
+}
+
+exports.repeatTimes = repeatTimes;
+
+function repeatUntilWall(block) {
+  while (!car.seesWallInFront()) {
+    block();
+  }
+}
+
+exports.repeatUntilWall = repeatUntilWall;
+},{}],"src/index.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2836,22 +2855,15 @@ Object.defineProperty(exports, "__esModule", {
 
 var level_1 = require("./level");
 
-function repeatTimes(numberOfTimes, block) {
-  for (var i = 0; i != numberOfTimes; i++) {
-    block();
-  }
-}
-
-function repeatUntilWall(block) {
-  while (!car.seesWallInFront()) {
-    block();
-  }
-}
+var repeaters_ts_1 = require("./repeaters.ts");
 
 var level4 = level_1.game.level5();
 var car = level4.car;
-car.turn();
-car.forward(); // Nu: 
+repeaters_ts_1.repeatTimes(10, function () {
+  car.forward();
+}); // car.turn ();
+// car.forward();
+// Nu: 
 // Uitleg repeat + walls toevoegen aan de robot, als hij een wall ziet gaat hij er niet doorheen
 // En repeatuntilwall proberen
 
@@ -2872,7 +2884,7 @@ let car = level2.car;
 // car.turn(-1);
 // car.turn(-1);
 // car.forward();
-},{"./level":"src/level.ts"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"./level":"src/level.ts","./repeaters.ts":"src/repeaters.ts"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -2900,7 +2912,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55860" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "56552" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

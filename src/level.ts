@@ -201,14 +201,12 @@ export class Level {
     // Check  op horizontale move
     if (from.y == to.y) {
       if (from.x < to.x) { // naar rechts
-        console.log ("----1")
         let wall = this.fields[to.y][from.x] === CellType.WallRight || this.fields[to.y][to.x] === CellType.WallLeft;
         
         
         return wall;
       }
       else { // naar links
-        console.log ("----2")
 
         return this.fields[to.y][to.x] === CellType.WallLeft || this.fields[to.y][to.x] === CellType.WallRight;
       }
@@ -217,16 +215,15 @@ export class Level {
     // Check op verticale move
     if (from.x == to.x) {
       if (from.y < to.y) {
-        console.log ("----3")
 
         return this.fields[from.y][to.x] === CellType.WallBottom || this.fields[to.y][to.x] === CellType.WallTop;
       }
       else { // omhoog
-        console.log ("----4")
-
         return this.fields[from.y][to.x] === CellType.WallTop || this.fields[to.y][to.x] === CellType.WallBottom;
       }
     }
+
+    // Check op diagonaal rijden
 
 
     return false;
