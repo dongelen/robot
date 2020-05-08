@@ -5,43 +5,147 @@ import {repeatUntilWall} from './repeaters.ts'
 
 let level4 = game.level5 ();
 var car = level4.car;
+car.speed = 100;
 
-repeatTimes (10, function () {
+// repeatTimes (10, function () {
+//     car.forward();
+// })
+
+console.log ("v9");
+repeatTimes (4, function () {
+    repeatUntilWall (function () {
+        car.forward();
+    })
+
+    car.turn();
+    car.turn();
+})
+
+repeatUntilWall (function () {
+    car.forward();
+})
+car.turn(-1);
+car.turn(-1);
+
+repeatUntilWall (function () {
     car.forward();
 })
 
-// car.turn ();
-// car.forward();
+car.turn(-1);
+car.turn(-1);
 
-// Nu: 
-// Uitleg repeat + walls toevoegen aan de robot, als hij een wall ziet gaat hij er niet doorheen
-// En repeatuntilwall proberen
+repeatUntilWall (function () {
+    car.forward();
+})
 
-
-
-/*
-Als je naar level2 wilt 
-
-let level2 = game.level2();
-let car = level2.car;
-*/
+car.turn(-1);
+car.turn(-1);
 
 
-// Level met onzichtbare muren. 
+repeatUntilWall (function () {
+    car.forward();
+})
+
+car.turn(-1);
+car.turn(-1);
 
 
-// let level2 = game.level2();
-// let car = level2.car;
-// car.speed = 1000;
+repeatUntilWall (function () {
+    car.forward();
+})
 
-// car.forward();
-// car.backward();
+car.turn(-1);
+car.turn(-1);
 
-// car.turn();
-// car.forward();
-// car.turn(-1);
-// car.turn(-1);
 
-// car.forward();
+repeatUntilWall (function () {
+    car.forward();
+})
 
+car.turn();
+car.turn();
+
+repeatUntilWall (function () {
+    car.forward();
+})
+
+car.turn();
+car.turn();
+
+repeatUntilWall (function () {
+    car.forward();
+})
+
+car.turn(-1);
+car.turn(-1);
+
+repeatUntilWall (function () {
+    car.forward();
+})
+
+car.turn(-1);
+car.turn(-1);
+
+repeatUntilWall (function () {
+    car.forward();
+})
+
+car.turn();
+car.turn();
+
+repeatUntilWall (function () {
+    car.forward();
+})
+
+
+car.turn();
+car.turn();
+
+repeatUntilWall (function () {
+    car.forward();
+})
+
+
+car.turn(-1);
+car.turn(-1);
+
+repeatUntilWall (function () {
+    car.forward();
+})
+
+car.turn(-1);
+car.turn(-1);
+
+repeatUntilWall (function () {
+    car.forward();
+})
+
+car.turn();
+car.turn();
+
+repeatUntilWall (function () {
+    car.forward();
+})
+
+car.turn();
+car.turn();
+
+repeatUntilWall (function () {
+    car.forward();
+})
+
+
+car.turn(-1);
+car.turn(-1);
+
+repeatUntilWall (function () {
+    car.forward();
+})
+
+car.turn(-1);
+car.turn(-1);
+
+repeatUntilWall (function () {
+    car.forward();
+})
 

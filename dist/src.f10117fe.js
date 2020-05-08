@@ -2434,7 +2434,6 @@ function (_super) {
   }
 
   GoalLevel5.prototype.finishedAt = function (robot, endPosition) {
-    console.log(endPosition);
     this.isGoalMet = endPosition.x == 9 && endPosition.y == 3;
   };
 
@@ -2572,6 +2571,13 @@ function () {
     } // Check op diagonaal rijden
 
 
+    if (from.x < to.x) {
+      if (from.y < to.y) {
+        return this.fields[from.y][from.x] == CellType.WallRight || this.fields[from.y][to.x] == CellType.WallLeft || this.fields[to.y][from.x] == CellType.WallTop || this.fields[to.y][to.x] == CellType.WallTop || this.fields[from.y][from.x] == CellType.WallBottom || this.fields[from.y][to.x] == CellType.WallBottom;
+      } // Hier zou meer moeten worden afhandeld, maar dat laat ik zitten als easter egg.
+
+    }
+
     return false;
   };
 
@@ -2670,6 +2676,7 @@ function (_super) {
   }
 
   Level5.prototype.afterInit = function () {
+    this.makeWallX(0, 1, 12, CellType.WallBottom);
     this.makeWallY(13, 0, 8, CellType.WallLeft);
     this.makeWallY(0, 2, 8, CellType.WallRight);
     this.makeWallX(5, 1, 9, CellType.WallBottom);
@@ -2831,6 +2838,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var level_1 = require("./level");
+
 function repeatTimes(numberOfTimes, block) {
   for (var i = 0; i != numberOfTimes; i++) {
     block();
@@ -2840,13 +2849,15 @@ function repeatTimes(numberOfTimes, block) {
 exports.repeatTimes = repeatTimes;
 
 function repeatUntilWall(block) {
+  var car = level_1.game.currentLevel.car;
+
   while (!car.seesWallInFront()) {
     block();
   }
 }
 
 exports.repeatUntilWall = repeatUntilWall;
-},{}],"src/index.ts":[function(require,module,exports) {
+},{"./level":"src/level.ts"}],"src/index.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2857,33 +2868,110 @@ var level_1 = require("./level");
 
 var repeaters_ts_1 = require("./repeaters.ts");
 
+var repeaters_ts_2 = require("./repeaters.ts");
+
 var level4 = level_1.game.level5();
 var car = level4.car;
-repeaters_ts_1.repeatTimes(10, function () {
+car.speed = 100; // repeatTimes (10, function () {
+//     car.forward();
+// })
+
+console.log("v9");
+repeaters_ts_1.repeatTimes(4, function () {
+  repeaters_ts_2.repeatUntilWall(function () {
+    car.forward();
+  });
+  car.turn();
+  car.turn();
+});
+repeaters_ts_2.repeatUntilWall(function () {
   car.forward();
-}); // car.turn ();
-// car.forward();
-// Nu: 
-// Uitleg repeat + walls toevoegen aan de robot, als hij een wall ziet gaat hij er niet doorheen
-// En repeatuntilwall proberen
-
-/*
-Als je naar level2 wilt
-
-let level2 = game.level2();
-let car = level2.car;
-*/
-// Level met onzichtbare muren. 
-// let level2 = game.level2();
-// let car = level2.car;
-// car.speed = 1000;
-// car.forward();
-// car.backward();
-// car.turn();
-// car.forward();
-// car.turn(-1);
-// car.turn(-1);
-// car.forward();
+});
+car.turn(-1);
+car.turn(-1);
+repeaters_ts_2.repeatUntilWall(function () {
+  car.forward();
+});
+car.turn(-1);
+car.turn(-1);
+repeaters_ts_2.repeatUntilWall(function () {
+  car.forward();
+});
+car.turn(-1);
+car.turn(-1);
+repeaters_ts_2.repeatUntilWall(function () {
+  car.forward();
+});
+car.turn(-1);
+car.turn(-1);
+repeaters_ts_2.repeatUntilWall(function () {
+  car.forward();
+});
+car.turn(-1);
+car.turn(-1);
+repeaters_ts_2.repeatUntilWall(function () {
+  car.forward();
+});
+car.turn();
+car.turn();
+repeaters_ts_2.repeatUntilWall(function () {
+  car.forward();
+});
+car.turn();
+car.turn();
+repeaters_ts_2.repeatUntilWall(function () {
+  car.forward();
+});
+car.turn(-1);
+car.turn(-1);
+repeaters_ts_2.repeatUntilWall(function () {
+  car.forward();
+});
+car.turn(-1);
+car.turn(-1);
+repeaters_ts_2.repeatUntilWall(function () {
+  car.forward();
+});
+car.turn();
+car.turn();
+repeaters_ts_2.repeatUntilWall(function () {
+  car.forward();
+});
+car.turn();
+car.turn();
+repeaters_ts_2.repeatUntilWall(function () {
+  car.forward();
+});
+car.turn(-1);
+car.turn(-1);
+repeaters_ts_2.repeatUntilWall(function () {
+  car.forward();
+});
+car.turn(-1);
+car.turn(-1);
+repeaters_ts_2.repeatUntilWall(function () {
+  car.forward();
+});
+car.turn();
+car.turn();
+repeaters_ts_2.repeatUntilWall(function () {
+  car.forward();
+});
+car.turn();
+car.turn();
+repeaters_ts_2.repeatUntilWall(function () {
+  car.forward();
+});
+car.turn(-1);
+car.turn(-1);
+repeaters_ts_2.repeatUntilWall(function () {
+  car.forward();
+});
+car.turn(-1);
+car.turn(-1);
+repeaters_ts_2.repeatUntilWall(function () {
+  car.forward();
+});
 },{"./level":"src/level.ts","./repeaters.ts":"src/repeaters.ts"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -2912,7 +3000,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "56552" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60618" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

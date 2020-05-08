@@ -76,7 +76,6 @@ class GoalLevel4 extends Goal{
 
 class GoalLevel5 extends Goal {
   finishedAt (robot: Car, endPosition: Position ) {
-    console.log (endPosition);
     this.isGoalMet = endPosition.x == 9 && endPosition.y == 3;
   }
 
@@ -224,6 +223,16 @@ export class Level {
     }
 
     // Check op diagonaal rijden
+    if (from.x < to.x) {
+      if (from.y < to.y) {
+
+        return this.fields[from.y][from.x] == CellType.WallRight || this.fields[from.y][to.x] == CellType.WallLeft ||
+          this.fields[to.y][from.x] == CellType.WallTop || this.fields[to.y][to.x] == CellType.WallTop ||
+          this.fields[from.y][from.x] == CellType.WallBottom || this.fields[from.y][to.x] == CellType.WallBottom
+      }
+
+      // Hier zou meer moeten worden afhandeld, maar dat laat ik zitten als easter egg.
+    }
 
 
     return false;
@@ -275,6 +284,8 @@ class Level4 extends Level {
 
 class Level5 extends Level {
   afterInit() {
+    this.makeWallX (0, 1, 12, CellType.WallBottom);
+
     this.makeWallY (13, 0, 8, CellType.WallLeft);
     this.makeWallY (0, 2, 8, CellType.WallRight);
     
