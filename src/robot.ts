@@ -31,7 +31,7 @@ export class Robot {
     private animationTimeLine: any;
   
     public rotation: number = 0;
-    public  speed = 100;
+    public  speed = 500;
 
     private isAnimationFinished = false;
   

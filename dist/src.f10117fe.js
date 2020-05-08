@@ -1925,7 +1925,7 @@ var Robot =
 function () {
   function Robot(level, goal, element, position, widthCell, heightCell) {
     this.rotation = 0;
-    this.speed = 100;
+    this.speed = 500;
     this.isAnimationFinished = false;
     this.timeOut = undefined;
     this.position = position;
@@ -2831,7 +2831,7 @@ exports.game = game;
 window.addEventListener("mousedown", function (event) {
   game.currentLevel.car.go();
 });
-},{"/public/car3.png":"public/car3.png","/public/car_backlights.png":"public/car_backlights.png","/public/lights.png":"public/lights.png","/public/background_level1.png":"public/background_level1.png","/public/background_level2.png":"public/background_level2.png","/public/background_level3.png":"public/background_level3.png","/public/background_level4.png":"public/background_level4.png","/public/background_level5.png":"public/background_level5.png","/public/carsound.mp3":"public/carsound.mp3","/public/honk.mp3":"public/honk.mp3","/public/j1.mp3":"public/j1.mp3","/public/j2.mp3":"public/j2.mp3","/public/j3.mp3":"public/j3.mp3","/public/j4.mp3":"public/j4.mp3","./robot":"src/robot.ts"}],"src/repeaters.ts":[function(require,module,exports) {
+},{"/public/car3.png":"public/car3.png","/public/car_backlights.png":"public/car_backlights.png","/public/lights.png":"public/lights.png","/public/background_level1.png":"public/background_level1.png","/public/background_level2.png":"public/background_level2.png","/public/background_level3.png":"public/background_level3.png","/public/background_level4.png":"public/background_level4.png","/public/background_level5.png":"public/background_level5.png","/public/carsound.mp3":"public/carsound.mp3","/public/honk.mp3":"public/honk.mp3","/public/j1.mp3":"public/j1.mp3","/public/j2.mp3":"public/j2.mp3","/public/j3.mp3":"public/j3.mp3","/public/j4.mp3":"public/j4.mp3","./robot":"src/robot.ts"}],"src/index.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2840,139 +2840,12 @@ Object.defineProperty(exports, "__esModule", {
 
 var level_1 = require("./level");
 
-function repeatTimes(numberOfTimes, block) {
-  for (var i = 0; i != numberOfTimes; i++) {
-    block();
-  }
-}
+var level1 = level_1.game.level1();
+var car = level1.car; // Plaats hier je code
 
-exports.repeatTimes = repeatTimes;
-
-function repeatUntilWall(block) {
-  var car = level_1.game.currentLevel.car;
-
-  while (!car.seesWallInFront()) {
-    block();
-  }
-}
-
-exports.repeatUntilWall = repeatUntilWall;
-},{"./level":"src/level.ts"}],"src/index.ts":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var level_1 = require("./level");
-
-var repeaters_ts_1 = require("./repeaters.ts");
-
-var repeaters_ts_2 = require("./repeaters.ts");
-
-var level4 = level_1.game.level5();
-var car = level4.car;
-car.speed = 100; // repeatTimes (10, function () {
-//     car.forward();
-// })
-
-console.log("v9");
-repeaters_ts_1.repeatTimes(4, function () {
-  repeaters_ts_2.repeatUntilWall(function () {
-    car.forward();
-  });
-  car.turn();
-  car.turn();
-});
-repeaters_ts_2.repeatUntilWall(function () {
-  car.forward();
-});
-car.turn(-1);
-car.turn(-1);
-repeaters_ts_2.repeatUntilWall(function () {
-  car.forward();
-});
-car.turn(-1);
-car.turn(-1);
-repeaters_ts_2.repeatUntilWall(function () {
-  car.forward();
-});
-car.turn(-1);
-car.turn(-1);
-repeaters_ts_2.repeatUntilWall(function () {
-  car.forward();
-});
-car.turn(-1);
-car.turn(-1);
-repeaters_ts_2.repeatUntilWall(function () {
-  car.forward();
-});
-car.turn(-1);
-car.turn(-1);
-repeaters_ts_2.repeatUntilWall(function () {
-  car.forward();
-});
-car.turn();
-car.turn();
-repeaters_ts_2.repeatUntilWall(function () {
-  car.forward();
-});
-car.turn();
-car.turn();
-repeaters_ts_2.repeatUntilWall(function () {
-  car.forward();
-});
-car.turn(-1);
-car.turn(-1);
-repeaters_ts_2.repeatUntilWall(function () {
-  car.forward();
-});
-car.turn(-1);
-car.turn(-1);
-repeaters_ts_2.repeatUntilWall(function () {
-  car.forward();
-});
-car.turn();
-car.turn();
-repeaters_ts_2.repeatUntilWall(function () {
-  car.forward();
-});
-car.turn();
-car.turn();
-repeaters_ts_2.repeatUntilWall(function () {
-  car.forward();
-});
-car.turn(-1);
-car.turn(-1);
-repeaters_ts_2.repeatUntilWall(function () {
-  car.forward();
-});
-car.turn(-1);
-car.turn(-1);
-repeaters_ts_2.repeatUntilWall(function () {
-  car.forward();
-});
-car.turn();
-car.turn();
-repeaters_ts_2.repeatUntilWall(function () {
-  car.forward();
-});
-car.turn();
-car.turn();
-repeaters_ts_2.repeatUntilWall(function () {
-  car.forward();
-});
-car.turn(-1);
-car.turn(-1);
-repeaters_ts_2.repeatUntilWall(function () {
-  car.forward();
-});
-car.turn(-1);
-car.turn(-1);
-repeaters_ts_2.repeatUntilWall(function () {
-  car.forward();
-});
-},{"./level":"src/level.ts","./repeaters.ts":"src/repeaters.ts"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+car.forward();
+car.forward();
+},{"./level":"src/level.ts"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -3000,7 +2873,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60618" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61718" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
