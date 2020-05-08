@@ -355,7 +355,7 @@ export class Game {
     return this.currentLevel;
   }
 
-  level5() : Level {
+  bozz() : Level {
     this.currentLevel = this.makeLevel5 (this.gameElement);
     return this.currentLevel;
   }

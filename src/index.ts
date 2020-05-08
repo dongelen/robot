@@ -1,11 +1,11 @@
 import {game} from './level';
-import {repeatTimes} from './repeaters.ts'
+import {repeatNumberOfTimes} from './repeaters.ts'
 import {repeatUntilWall} from './repeaters.ts'
 
 
-let level1 = game.level1 ();
-var car = level1.car;
+let level5 = game.bozz ();
+var car = level5.car;
 
-// Plaats hier je code
-car.forward();
-car.forward();
+repeatUntilWall (function() {
+    car.forward();
+})

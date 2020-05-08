@@ -2736,7 +2736,7 @@ function () {
     return this.currentLevel;
   };
 
-  Game.prototype.level5 = function () {
+  Game.prototype.bozz = function () {
     this.currentLevel = this.makeLevel5(this.gameElement);
     return this.currentLevel;
   }; // Generates test level
@@ -2831,7 +2831,7 @@ exports.game = game;
 window.addEventListener("mousedown", function (event) {
   game.currentLevel.car.go();
 });
-},{"/public/car3.png":"public/car3.png","/public/car_backlights.png":"public/car_backlights.png","/public/lights.png":"public/lights.png","/public/background_level1.png":"public/background_level1.png","/public/background_level2.png":"public/background_level2.png","/public/background_level3.png":"public/background_level3.png","/public/background_level4.png":"public/background_level4.png","/public/background_level5.png":"public/background_level5.png","/public/carsound.mp3":"public/carsound.mp3","/public/honk.mp3":"public/honk.mp3","/public/j1.mp3":"public/j1.mp3","/public/j2.mp3":"public/j2.mp3","/public/j3.mp3":"public/j3.mp3","/public/j4.mp3":"public/j4.mp3","./robot":"src/robot.ts"}],"src/index.ts":[function(require,module,exports) {
+},{"/public/car3.png":"public/car3.png","/public/car_backlights.png":"public/car_backlights.png","/public/lights.png":"public/lights.png","/public/background_level1.png":"public/background_level1.png","/public/background_level2.png":"public/background_level2.png","/public/background_level3.png":"public/background_level3.png","/public/background_level4.png":"public/background_level4.png","/public/background_level5.png":"public/background_level5.png","/public/carsound.mp3":"public/carsound.mp3","/public/honk.mp3":"public/honk.mp3","/public/j1.mp3":"public/j1.mp3","/public/j2.mp3":"public/j2.mp3","/public/j3.mp3":"public/j3.mp3","/public/j4.mp3":"public/j4.mp3","./robot":"src/robot.ts"}],"src/repeaters.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2840,12 +2840,40 @@ Object.defineProperty(exports, "__esModule", {
 
 var level_1 = require("./level");
 
-var level1 = level_1.game.level1();
-var car = level1.car; // Plaats hier je code
+function repeatNumberOfTimes(numberOfTimes, block) {
+  for (var i = 0; i != numberOfTimes; i++) {
+    block();
+  }
+}
 
-car.forward();
-car.forward();
-},{"./level":"src/level.ts"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+exports.repeatNumberOfTimes = repeatNumberOfTimes;
+
+function repeatUntilWall(block) {
+  var car = level_1.game.currentLevel.car;
+
+  while (!car.seesWallInFront()) {
+    block();
+  }
+}
+
+exports.repeatUntilWall = repeatUntilWall;
+},{"./level":"src/level.ts"}],"src/index.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var level_1 = require("./level");
+
+var repeaters_ts_1 = require("./repeaters.ts");
+
+var level5 = level_1.game.bozz();
+var car = level5.car;
+repeaters_ts_1.repeatUntilWall(function () {
+  car.forward();
+});
+},{"./level":"src/level.ts","./repeaters.ts":"src/repeaters.ts"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -2873,7 +2901,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61718" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64095" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
